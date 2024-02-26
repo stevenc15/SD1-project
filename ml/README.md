@@ -7,14 +7,13 @@
     <p>Ensure the following tools are installed on your system:</p>
     <ul>
       <li><strong>Docker</strong>: Follow the installation guide at <a href="https://docs.docker.com/get-docker/">Install Docker</a>.</li>
-      <li><strong>NVIDIA Container Toolkit</strong>: Install it by following the guide at <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">Install NVIDIA Container Toolkit</a>.</li>
     </ul>
   </div>
 
   <div id="preparation">
     <h2>Preparation</h2>
     <p>Clone your desired Git repository into a local directory. This step ensures that your Docker container will have immediate access to the repository's contents.</p>
-    <pre><code>git clone &lt;https://github.com/stevenc15/SD1-project.git&gt;
+    <pre><code>git clone https://github.com/stevenc15/SD1-project.git
 </code></pre>
   </div>
 
