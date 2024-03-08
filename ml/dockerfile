@@ -21,6 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+#DBN 
+ADD ml/repos/deep-belief-network/requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 # Set an environment variable for CUDA
 ENV PATH=/usr/local/cuda-11.2/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:${LD_LIBRARY_PATH}
