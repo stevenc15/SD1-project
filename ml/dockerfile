@@ -25,6 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ADD ml/repos/deep-belief-network/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
+#DBN with pytorch
+ADD ml/repos/Deep-Belief-Networks-in-PyTorch/DBN.py DBN.py
+
 # Set an environment variable for CUDA
 ENV PATH=/usr/local/cuda-11.2/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:${LD_LIBRARY_PATH}
