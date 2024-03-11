@@ -32,7 +32,8 @@ class dataloader_emg_joints:
         
         self.data = np.array(totaldata_list)
 
-    def window_data(self, dataset_folder):
+    def window_data(self):
+        dataset_folder = os.path.join(self.config.dataset_root, self.config.dataset_name)
         window_size = self.config.window_length
         all_data_windowed = []
         data_info_list = []  # To store information about each window
@@ -67,15 +68,9 @@ class dataloader_emg_joints:
 
         return data_info_df
     
-    def save_windowed_data(self,dataset_path,dataset_name):
-        print(f"Saving windowed data to {dataset_path}")
-        data_info_df = self.window_data(os.path.join(dataset_path, dataset_name))
-        data_info_df.to_csv(os.path.join(dataset_path, f"{dataset_name}_info.csv"))
-        print(f"Saved windowed data to {dataset_path}")
+    def save_windowed_data(self):
 
-
-    def load_emg_joint_pairs(self):
-        print("Loading emg_joint_pairs")
-        self.load_data()
-        print("Loaded emg_joint_pairs")
-        print(f"Data shape: {self.data.shape}")
+        print(f"Saving windowed data to {self.config.dataset_root}")
+        data_info_df = self.window_data()
+        data_info_df.to_csv(os.path.join(self.config.dataset_root, f"{self.config.dataset_name}_info.csv"))
+        print(f"Saved windowed data to {self.config.dataset_root}")
