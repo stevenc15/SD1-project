@@ -34,8 +34,8 @@ class EmgJointPairDataset(Dataset):
         return len(self.data)
     
     def __getitem__(self, idx):
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
+        #if torch.is_tensor(idx):
+            #idx = idx.tolist()
         
         file_path = os.path.join(self.root_dir, self.data.iloc[idx, 1])
         combined_data, _ = get_data_from_wav_file(file_path)
