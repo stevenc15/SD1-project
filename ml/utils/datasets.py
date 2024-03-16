@@ -10,7 +10,6 @@ class EmgJointPairDataset(Dataset):
     def __init__(self, config, split='train'):
         """
         Initializes the dataset with a train/test split.
-
         :param config: Configuration object with dataset parameters.
         :param split: 'train' or 'test' to specify the subset of data.
         :param test_size: The proportion of the dataset to include in the test split.

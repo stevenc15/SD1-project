@@ -14,9 +14,11 @@ def fft_filter_signal_single_channel(signal, threshold=5e3):
 def fft_filter_signal(signal, threshold=5e3):
     return np.array([fft_filter_signal_single_channel(channel, threshold) for channel in signal.T]).T
 
-def get_data_from_wav_file(filename): #return data shape [time_steps,channels]
+def get_data_from_wav_file(filename,variable1=0,variabl2=2): #return data shape [time_steps,channels]
         sample_rate, data = wavfile.read(filename)
         # print(f"Sample rate: {sample_rate}Hz|Data shape: {data.shape}")
         return data, sample_rate
+
+
 
 

@@ -4,7 +4,7 @@ from data_utils import get_data_from_wav_file
 from scipy.io import wavfile
 import pandas as pd
 
-class dataloader_emg_joints: 
+class datasharder_emg_joints: 
 
     def __init__(self,config):
         self.config = config
