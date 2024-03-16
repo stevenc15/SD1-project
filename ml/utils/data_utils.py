@@ -22,8 +22,8 @@ def wavelet_filter_signal_single_channel(signal, Threshold, wavelet, Mode, Level
     denoised_signal = pywt.waverec(coeffs_thresh, wavelet)
     return denoised_signal
 
-def fft_filter_signal(signal, threshold=5e3):
-    return np.array([wavelet_filter_signal_single_channel(channel, threshold) for channel in signal.T]).T
+def wavelet_filter_signal(signal, Threshold, wavelet, Mode, Level):
+    return np.array([wavelet_filter_signal_single_channel(channel, Threshold, wavelet, Mode, Level) for channel in signal.T]).T
     
 def get_data_from_wav_file(filename): #return data shape [time_steps,channels]
         sample_rate, data = wavfile.read(filename)
