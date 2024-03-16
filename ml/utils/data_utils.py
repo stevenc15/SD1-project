@@ -15,14 +15,14 @@ def fft_filter_signal_single_channel(signal, threshold=5e3):
 def fft_filter_signal(signal, threshold=5e3):
     return np.array([fft_filter_signal_single_channel(channel, threshold) for channel in signal.T]).T
 
-def wavelet_filter_signal_single_channel(signal, Threshold, wavelet, Mode, Level):
+def wavelet_filter_signal_single_channel(signal, Threshold=.001, wavelet='db4', Mode='garrote', Level=5):
     threshold = Threshold
     coeffs = pywt.wavedec(signal, wavelet, level=Level)
     coeffs_thresh = [pywt.threshold(c, threshold, mode=Mode) for c in coeffs]
     denoised_signal = pywt.waverec(coeffs_thresh, wavelet)
     return denoised_signal
 
-def wavelet_filter_signal(signal, Threshold, wavelet, Mode, Level):
+def wavelet_filter_signal(signal, Threshold=.001, wavelet='db4', Mode='garrote', Level=5):
     return np.array([wavelet_filter_signal_single_channel(channel, Threshold, wavelet, Mode, Level) for channel in signal.T]).T
     
 def get_data_from_wav_file(filename): #return data shape [time_steps,channels]
