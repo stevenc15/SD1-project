@@ -1,3 +1,6 @@
+#Notebook in which model is made and used is
+#found under the file "NeuroleapModelArchitecture.py"
+
 NN_model = Sequential()
 
 # The Input Layer :
@@ -12,6 +15,3 @@ NN_model.add(Dense(66,activation='linear'))
 
 # Compile the network :
 NN_model.compile(loss='mse', optimizer='Adam')
-
-NN_model.save(f"untrained_neuroleap_model.h5")
-NN_model.summary()
