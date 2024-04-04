@@ -10,7 +10,7 @@ export const signup = async (req, res, next) => {
         res.status(201).json("User created succesfully")
     } catch (error) {
         next(error)
-        console.log("Something went wrong")
+        console.log("Something went wrong signing up")
     }
 }
 
@@ -26,6 +26,7 @@ export const login = async (req, res, next) => {
         res.status(200).json("Logged in succesfully")
     } catch (error) {
         next(error)
-        console.log("Something went wrong")
+        console.log(req.body)
+        console.log("Something went wrong logging in")
     }
 }
