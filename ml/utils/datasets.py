@@ -38,7 +38,8 @@ class EmgJointPairDataset(Dataset):
         
         file_path = os.path.join(self.root_dir, self.data.iloc[idx, 1])
         combined_data, _ = get_data_from_wav_file(file_path)
-        emg_data = combined_data[:, :self.config.num_channels_emg]
+        #emg_data = combined_data[:, :self.config.num_channels_emg]
+        emg_data = combined_data[ :self.config.num_channels_emg]
         joint_data = combined_data[:, self.config.num_channels_emg:]
         
         emg_data = self.apply_transforms(emg_data, self.config.emg_transforms)
