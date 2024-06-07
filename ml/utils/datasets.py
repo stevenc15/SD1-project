@@ -43,8 +43,8 @@ class EmgJointPairDataset(Dataset):
         #joint_data = combined_data[:, self.config.num_channels_emg:]
         joint_data = combined_data[ self.config.num_channels_emg:]
         
-        emg_data = self.apply_transforms(emg_data, self.config.emg_transforms)
-        joint_data = self.apply_transforms(joint_data, self.config.joint_transforms)
+        #emg_data = self.apply_transforms(emg_data, self.config.emg_transforms)
+        #joint_data = self.apply_transforms(joint_data, self.config.joint_transforms)
 
         return emg_data, joint_data
         
