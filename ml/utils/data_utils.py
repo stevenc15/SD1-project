@@ -4,7 +4,7 @@ import os
 import sys
 import numpy as np
 import pywt
-#fourier transform for individual channe;s
+#fourier transform for individual channels
 def fft_filter_signal_single_channel(signal, threshold=5e3):
     fourier = rfft(signal)
     frequencies = rfftfreq(signal.size, d=20e-3/signal.size)
