@@ -26,8 +26,6 @@ class config_general: #hyperparameters
         self.output_size = kwargs.get('output_size', 3)
         
         hyperparameters = [
-        f"dataset_train_name_{self.dataset_train_name}",
-        f"dataset_test_name_{self.dataset_test_name}", 
         f"batch_size_{self.batch_size}",
         f"epochs_{self.epochs}",
         f"lr_{self.lr}",
@@ -37,7 +35,12 @@ class config_general: #hyperparameters
         f"num_patients_{self.num_patients}",
         f"seed_{self.seed}",
         f"data_folder_name_{self.data_folder_name}",
+        f"dataset_root_{self.dataset_root}",
+        f"dataset_train_name_{self.dataset_train_name}",
+        f"dataset_test_name_{self.dataset_test_name}", 
         f"window_length_{self.window_length}",
+        f"imu_transforms_{self.imu_transforms}",
+        f"joints_transforms_{self.joints_transforms}",
         f"hidden_size_{self.hidden_size}",
         f"num_layers_{self.num_layers}",
         f"input_size_{self.input_size}",
