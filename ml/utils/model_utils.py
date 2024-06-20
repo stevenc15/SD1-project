@@ -1,6 +1,7 @@
 #SHOULD BE GOOD TO GO
 import torch
 from matplotlib import pyplot as plt
+import numpy as np
 
 #function to plot predictions MODEL
 def plot_predictions(inputs, targets, predictions, num_channels=3):
@@ -24,9 +25,8 @@ def train_model(model, train_loader, val_loader, num_epochs, criterion, optimize
         model.train()  # Set model to training mode
         train_loss = 0
         for inputs, targets in train_loader:
-            inputs = inputs.unsqueeze(1).to(device)  # Ensure 3D tensor
-            targets = targets.unsqueeze(1).to(device)  # Ensure 3D tensor
-            
+            inputs = inputs.to(device)  # Ensure 3D tensor
+            targets = targets.to(device)  # Ensure 3D tensor
             outputs = model(inputs)
             loss = criterion(outputs, targets)
             
@@ -44,10 +44,11 @@ def train_model(model, train_loader, val_loader, num_epochs, criterion, optimize
         val_loss = 0
         with torch.no_grad():
             for inputs, targets in val_loader:
-                inputs = inputs.unsqueeze(1).to(device)  # Ensure 3D tensor
-                targets = targets.unsqueeze(1).to(device)  # Ensure 3D tensor
+                inputs = inputs.to(device)  # Ensure 3D tensor
+                targets = targets.to(device)  # Ensure 3D tensor
 
                 outputs = model(inputs)
+                
                 loss = criterion(outputs, targets)
                 val_loss += loss.item()
         
@@ -75,8 +76,8 @@ def evaluate_model(model, data_loader, device):
     all_inputs, all_targets, all_predictions = [], [], []
     with torch.no_grad():
         for inputs, targets in data_loader:
-            inputs = inputs.unsqueeze(1).to(device)  # Ensure 3D tensor
-            targets = targets.unsqueeze(1).to(device)  # Ensure 3D tensor
+            inputs = inputs.to(device)  # Ensure 3D tensor
+            targets = targets.to(device)  # Ensure 3D tensor
 
             outputs = model(inputs)
             
