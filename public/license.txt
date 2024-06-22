@@ -1,0 +1,11 @@
+Model Information:
+* title:	Violet's Prosthetic Arm
+* source:	https://sketchfab.com/3d-models/violets-prosthetic-arm-4be10ebb413b4d3b8dbfa9ced0d71455
+* author:	drei_icari (https://sketchfab.com/drkehowler)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Violet's Prosthetic Arm" (https://sketchfab.com/3d-models/violets-prosthetic-arm-4be10ebb413b4d3b8dbfa9ced0d71455) by drei_icari (https://sketchfab.com/drkehowler) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
