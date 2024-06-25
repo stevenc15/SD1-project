@@ -1,7 +1,0 @@
-Notes 
-What models are saved?
--TRAINED AND UNTRAINED
-What needs to be accessed in the docker file?
--TBD
-What type of file stores the model?
--.py prob pkl after saving it
