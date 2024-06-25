@@ -345,6 +345,164 @@ def correlation_coefficient_loss_joint(y_true, y_pred):
 
     return l1+l2
 
+"""## Model--Gait-Net--Joint Loss"""
+
+def Gait_Net(inputs_1D_N,inputs_2D_N):
+
+  model_1=Bidirectional(GRU(128,return_sequences=True))(inputs_1D_N)
+  model_1=Dropout(0.4)(model_1)
+  model_1=Bidirectional(GRU(64,return_sequences=True))(model_1)
+  model_1=Dropout(0.4)(model_1)
+  model_1=Flatten()(model_1)
+
+  model_2=Bidirectional(GRU(128,return_sequences=True))(inputs_1D_N)
+  model_2=Dropout(0.4)(model_2)
+  model_2=Bidirectional(GRU(64,return_sequences=True))(model_2)
+  model_2=Dropout(0.4)(model_2)
+  model_2=Flatten()(model_2)
+
+  X=Conv2D(64, (3, 3), activation='relu',padding='same')(inputs_2D_N)
+  X=BatchNormalization()(X)
+  X=MaxPooling2D((2, 2))(X)
+  X=Conv2D(128, (3, 3), activation='relu', padding='same')(X)
+  X=BatchNormalization()(X)
+  X=MaxPooling2D((2, 2))(X)
+  X=Dense(64, activation='relu')(X)
+  X=Dropout(0.2)(X)
+  X=Dense(32,activation='relu')(X)
+  X=Dropout(0.2)(X)
+
+  X_1=Flatten()(X)
+  X= concatenate([model_2,X_1])
+
+
+  model_3=Bidirectional(GRU(128,return_sequences=True))(inputs_1D_N)
+  model_3=Dropout(0.4)(model_3)
+  model_3=Bidirectional(GRU(64,return_sequences=True))(model_3)
+  model_3=Dropout(0.4)(model_3)
+  model_3=Flatten()(model_3)
+
+  CNN=Conv1D(filters=64, kernel_size=3, activation='relu',padding='same')(inputs_1D_N)
+  CNN=Conv1D(filters=64, kernel_size=3, activation='relu',padding='same')(CNN)
+  CNN=BatchNormalization()(CNN)
+  CNN=MaxPooling1D(pool_size=2)(CNN)
+  CNN=Conv1D(filters=128, kernel_size=3, activation='relu',padding='same')(CNN)
+  CNN=Conv1D(filters=128, kernel_size=3, activation='relu',padding='same')(CNN)
+  CNN=BatchNormalization()(CNN)
+  CNN=MaxPooling1D(pool_size=2)(CNN)
+
+  CNN=Dense(64, activation='relu')(CNN)
+  CNN=Dropout(0.2)(CNN)
+  CNN=Dense(32, activation='relu')(CNN)
+  CNN=Dropout(0.2)(CNN)
+
+  CNN_1=Flatten()(CNN)
+  CNN= concatenate([model_3,CNN_1])
+
+
+  num_pred=6
+  output_GRU=Dense(num_pred*w,bias_regularizer=l2(0.001), activation='linear')(model_1)
+  output_GRU=Reshape(target_shape=(w,num_pred))(output_GRU)
+  output_C2=Dense(num_pred*w,bias_regularizer=l2(0.001), activation='linear')(X)
+  output_C2=Reshape(target_shape=(w,num_pred))(output_C2)
+  output_C1=Dense(num_pred*w,bias_regularizer=l2(0.001), activation='linear')(CNN)
+  output_C1=Reshape(target_shape=(w,num_pred))(output_C1)
+
+
+  output = Average()([output_GRU,output_C2,output_C1])
+
+  return (output_GRU,output_C2,output_C1,output)
+
+#### Main Model ####
+
+inputs_1D = tf.keras.layers.Input( shape=(w,12) )
+inputs_2D = tf.keras.layers.Input( shape=(w,6,2) )
+
+
+inputs_1D_N=BatchNormalization()(inputs_1D)
+inputs_2D_N=BatchNormalization()(inputs_2D)
+
+
+output_1,output_2,output_3,output=Gait_Net(inputs_1D_N,inputs_2D_N)
+
+model = Model(inputs=[inputs_1D, inputs_2D], outputs=[output_1,output_2,output_3,output])
+model.compile(loss=correlation_coefficient_loss_RMSE, optimizer='Adam')
+
+
+history=model.fit([np.array(train_X_1D[:,:,36:48]),np.array(train_X_2D)], [train_y_5,train_y_5,train_y_5,train_y_5], epochs=30, batch_size=64, validation_data=([X_validation_1D[:,:,36:48],\
+                                                                      X_validation_2D], [Y_validation,Y_validation,Y_validation,Y_validation]), verbose=2, shuffle=False)
+
+filename = path+'model_Gait_JL_Net.h5'
+model.save(filename)
+print('>Saved %s' % filename)
+
+# # # summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'validation'], loc='upper right')
+plt.show()
+model.summary()
+
+gc.collect()
+gc.collect()
+gc.collect()
+gc.collect()
+
+model_path = path+'model_Gait_JL_Net.h5'
+model=load_model(model_path, custom_objects={'correlation_coefficient_loss_RMSE': correlation_coefficient_loss_RMSE})
+
+[yhat_1,yhat_2,yhat_3,yhat_4]=model.predict([test_X_1D[:,:,36:48],test_X_2D])
+
+
+ ### Present ###
+yhat_5=yhat_4.reshape((yhat_4.shape[0]*w,6))
+test_y_r=test_y.reshape((test_y.shape[0]*w,6))
+
+print(yhat_4.shape)
+
+### Unpack ###
+yhat_up=unpack_dataset_present(np.array(yhat_5))
+test_y_up=unpack_dataset_present(np.array(test_y_r))
+
+print(yhat_up.shape,test_y_up.shape)
+
+
+### Present ###
+
+yhat_up=yhat_up.reshape(int(len(yhat_up)/6),6)
+test_y_up=test_y_up.reshape(int(len(test_y_up)/6),6)
+
+print(yhat_up.shape,test_y_up.shape)
+
+### Present ###
+
+rmse,p= prediction_test(np.array(yhat_up),np.array(test_y_up))
+
+print(rmse[0])
+print(rmse[1])
+print(rmse[2])
+
+m=np.mean(rmse)
+
+print('\n')
+print(m)
+
+print('\n')
+
+print(p[0])
+print(p[1])
+print(p[2])
+print('\n')
+
+print(np.mean(p))
+
+RMSE_Gait_JL_Net=rmse
+PCC_Gait_JL_Net=p
+
+Ablation_1=np.hstack([RMSE_Gait_JL_Net,PCC_Gait_JL_Net])
 
 """# Pytorch Implementation"""
 

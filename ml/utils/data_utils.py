@@ -4,8 +4,6 @@ import os
 import sys
 import numpy as np
 import pywt
-import pandas as pd
-
 #fourier transform for individual channels
 def fft_filter_signal_single_channel(signal, threshold=5e3):
     fourier = rfft(signal)
