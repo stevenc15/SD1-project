@@ -39,9 +39,6 @@ class DataSharder:
                 imu_data = self._resample_data(imu_data, imu_sample_rate)
                 joints_data = self._resample_data(joints_data, joints_sample_rate)
 
-                # imu_data = self._normalize_data(imu_data) removed bc we should normalize when loading in during training
-                # joints_data = self._normalize_data(joints_data)
-
                 combined_data = torch.cat((imu_data, joints_data), dim=1)
                 self._save_windowed_data(combined_data, patient_id, session_index, split)
 
@@ -55,18 +52,14 @@ class DataSharder:
             data = T.Resample(sample_rate, self.sample_rate)(data.T).T
         return data
 
-    def _normalize_data(self, data):
-        return (data - data.mean(dim=0)) / data.std(dim=0)
-
     def _process_and_save_patients_csv(self, patient_id_list, split):
         for patient_id in tqdm(patient_id_list, desc=f"Processing {split} patients"):
             patient_files = os.listdir(os.path.join(self.data_folder_path, patient_id, "combined"))
             for session_file in tqdm(patient_files, desc=f"Processing sessions for {patient_id}", leave=False):
                 data = pd.read_csv(os.path.join(self.data_folder_path, patient_id, "combined", session_file))
-                data_tensor = torch.tensor(data.values, dtype=torch.float32)
-                self._save_windowed_data(data_tensor, patient_id, session_file.split('.')[0], split)
+                self._save_windowed_data(data, patient_id, session_file.split('.')[0], split, is_csv=True)
 
-    def _save_windowed_data(self, data, patient_id, session_id, split):
+    def _save_windowed_data(self, data, patient_id, session_id, split, is_csv=False):
         dataset_name = f"{self.config.dataset_name}_wl{self.window_length}_ol{self.window_overlap}_np{self.num_patients}"
         dataset_folder = os.path.join(self.config.dataset_root, dataset_name, self.config.dataset_train_name if split == "train" else self.config.dataset_test_name)
         os.makedirs(dataset_folder, exist_ok=True)
@@ -78,14 +71,14 @@ class DataSharder:
         data_info_list = []
 
         for i in tqdm(range(0, len(data) - window_size + 1, step_size), desc=f"Windowing data for {patient_id}_{session_id}", leave=False):
-            windowed_data = data[i:i+window_size]
+            windowed_data = data.iloc[i:i+window_size] if is_csv else data[i:i+window_size]
             if windowed_data.shape[0] < window_size:
                 continue
 
-            windowed_data_np = windowed_data.cpu().numpy()
+            windowed_data_np = windowed_data.to_numpy() if is_csv else windowed_data.cpu().numpy()
             file_name = f"{patient_id}_session_{session_id}_window_{i}_ws{window_size}_ol{overlap}.csv"
             file_path = os.path.join(dataset_folder, file_name)
-            pd.DataFrame(windowed_data_np).to_csv(file_path, index=False)
+            pd.DataFrame(windowed_data_np, columns=data.columns if is_csv else None).to_csv(file_path, index=False)
             data_info_list.append({"file_name": file_name, "file_path": file_path})
 
         data_info_df = pd.DataFrame(data_info_list)
@@ -93,7 +86,7 @@ class DataSharder:
 
 if __name__ == "__main__":
     import sys  # you need this to add path to utils folder
-    sys.path.append('../utils') 
+    sys.path.append('../utils')
     from configs import config_general
 
     config = config_general(
@@ -101,7 +94,7 @@ if __name__ == "__main__":
         dataset_root="../../datasets",
         dataset_name="two_subject",
         window_length=100,
-        window_overlap=50,  # Added for window overlap
+        window_overlap=50,
         input_format="csv",
         num_patients=2,
     )
