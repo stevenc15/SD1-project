@@ -1,12 +1,18 @@
 import pandas as pd
 import numpy as np
 import os
+from tqdm import tqdm
+import warnings
+
+# Suppress specific warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 def load_mot_file(file):
     with open(file) as f:
         lines = f.readlines()
     endheader = lines.index('endheader\n')
-    df = pd.read_csv(file, skiprows=endheader+1, delim_whitespace=True, header=None)
+    df = pd.read_csv(file, skiprows=endheader+1, sep='\s+', header=None)
     df.columns = lines[endheader+1].split()
     return df
 
@@ -71,7 +77,7 @@ def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='ti
     mot_files = [f for f in os.listdir(mot_folder) if f.endswith('.mot')]
     csv_files = [f for f in os.listdir(csv_folder) if f.endswith('.csv')]
 
-    for mot_file in mot_files:
+    for mot_file in tqdm(mot_files, desc="Processing .mot files"):
         mot_path = os.path.join(mot_folder, mot_file)
         base_name = os.path.splitext(mot_file)[0].replace('_IK', '')
         matching_csv_files = [f for f in csv_files if f.startswith(base_name)]
