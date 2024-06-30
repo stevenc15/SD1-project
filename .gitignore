@@ -1,2 +1,3 @@
-datacollection/EMG-data.csv
-datasets
+./Flask/__pycache__/
+
+.env/
