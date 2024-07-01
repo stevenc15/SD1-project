@@ -4,12 +4,13 @@ import torch #for making, training the model and processing the data in pytorch
 import time
 from loss import RMSELoss
 
-def train_kinematics(train_loader, val_loader, device,  learn_rate, EPOCHS, model,filename,k_1,k_2,k_3,k_4):
+import matplotlib.pyplot as plt
+def train_kinematics(device, train_loader, val_loader, learn_rate, EPOCHS, model,filename,k_1,k_2,k_3,k_4):
 
     if torch.cuda.is_available():
       model.cuda()
     # Defining loss function and optimizer
-    criterion = RMSELoss()
+    criterion =RMSELoss()
     # criterion =correlation_coefficient_loss_joint_pytorch()
 
     # criterion=PearsonCorrLoss()
@@ -79,6 +80,8 @@ def train_kinematics(train_loader, val_loader, device,  learn_rate, EPOCHS, mode
             optimizer.zero_grad()
 
             output_1, output_2, output_3, output= model(data_features_1D[:,:,k_1:k_2].to(device).float(),data_features_2D[:,:,:,k_3:k_4].to(device).float())
+            print (output.shape)
+            print(data_targets.shape)
             loss=criterion(output, data_targets.to(device).float())
 
             loss.backward()

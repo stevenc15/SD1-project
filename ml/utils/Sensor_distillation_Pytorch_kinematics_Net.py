@@ -843,7 +843,7 @@ class teacher(nn.Module):
 #run model initialization and train model, teacher model
 # %%
 k_1=0
-k_2=48
+k_2=48 
 k_3=0
 k_4=8
 

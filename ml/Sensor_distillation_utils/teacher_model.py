@@ -8,7 +8,6 @@ import torch.nn as nn #neural network construction
 
 
 from model import Encoder_GRU, Encoder_CNN_1D, Encoder_CNN_2D
-
 class teacher(nn.Module):
     def __init__(self, input_shape_1D,input_shape_2D, w):
         super(teacher, self).__init__()
@@ -16,9 +15,9 @@ class teacher(nn.Module):
 
         # 1D Models
 
-        self.model_1=Encoder_GRU(input_shape_1D,input_shape_2D,0.40)
-        self.cnn_1D = Encoder_CNN_1D(input_shape_1D,input_shape_2D,0.40)
-        self.cnn_2D = Encoder_CNN_2D(input_shape_1D,input_shape_2D,0.40)
+        self.model_1=Encoder_GRU(input_shape_1D,input_shape_2D,0.40, self.w)
+        self.cnn_1D = Encoder_CNN_1D(input_shape_1D,input_shape_2D,0.40, self.w)
+        self.cnn_2D = Encoder_CNN_2D(input_shape_1D,input_shape_2D,0.40, self.w)
 
         self.BN_1D= nn.BatchNorm1d(input_shape_1D, affine=False)
         self.BN_2D= nn.BatchNorm2d(input_shape_2D, affine=False)
