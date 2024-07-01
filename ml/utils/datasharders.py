@@ -1,193 +1,102 @@
-#SHOULD BE GOOD TO GO
 import os
-import random
 import numpy as np
-from data_utils import get_data_from_wav_file
-from scipy.io import wavfile
 import pandas as pd
-
-import torchaudio.transforms as T
-
 import torch
-class datasharder_imu_joints: 
+import torchaudio.transforms as T
+from data_utils import get_data_from_wav_file
+from tqdm import tqdm
 
-    #define config
-    def __init__(self,config, sample_rate):
+class DataSharder:
+    def __init__(self, config):
         self.config = config
-        self.sample_rate=sample_rate
+        self.sample_rate = config.sample_rate
+        self.input_format = config.input_format
+        self.data_folder_path = config.data_folder_name
+        self.window_length = int(config.window_length)  # Ensure window_size is an integer
+        self.window_overlap = int(config.window_overlap)  # Ensure overlap is an integer
+        self.num_patients = int(config.num_patients)  # Ensure num_patients is an integer
 
-    #length of data
-    def __len__(self):
-        return len(self.data)
+    def load_data(self):
+        patient_folders_list = [f for f in os.listdir(self.data_folder_path) if os.path.isdir(os.path.join(self.data_folder_path, f))]
+        training_patients = patient_folders_list[:self.num_patients-1]
+        testing_patients = patient_folders_list[self.num_patients-1:]
 
-    #load data
-    def load_data(self):        
-        
-        #where data is located
-        data_folder_path = self.config.data_folder_name
-        
-        #access data folder
-        patient_folders_list = [f for f in os.listdir(data_folder_path) if os.path.isdir(os.path.join(data_folder_path, f))]
-        
-        random.shuffle(patient_folders_list)
-        
-        # Split the list into training and testing subsets
-        training_patients = patient_folders_list[:self.config.num_patients-1]
-        testing_patients = patient_folders_list[self.config.num_patients-1:]
-                
-        #function to process patients in training/testing list
-        def process_patients (patient_list_type):
-            
-            #total data
-            totaldata_list = []  # shape = [patientid, sessionsid, emg_channels+joints_channels]
-            
-            #for patient in data folder
-            for patient_id in patient_list_type:
-                
-                #create a patient data list for each patient
-                patient_data_list = []  # shape [sessionsid, emg_channels+joints_channels]
-            
-                #for the session from the patients data 
-                for session_index in range(self.config.num_sessions):
-                    
-                    #IMU
-                    imu_file_path = data_folder_path+"/"+ patient_id+"/"+f"run{session_index}_IMU.wav"
-                
-                    #JOINT 
-                    joints_file_path = data_folder_path+"/"+ patient_id+"/"+f"run{session_index}_JOINTS.wav"
-                
-                    #grab imu data and sr
-                    imu_data, imu_sample_rate = get_data_from_wav_file(imu_file_path)  # [time_steps, channels] ex [1000,8]
-                
-                    #grab joint data and sr
-                    joints_data, joints_sample_rate = get_data_from_wav_file(joints_file_path)  # [time_steps, channels] ex [1000,2]               
-                
-                    #give status of the loaded imu and joint data
-                    print(f"Loaded {imu_file_path}|{joints_file_path}\n__________________________________________")
-                    
-                    imu_data = torch.tensor(imu_data, dtype=torch.float32)
-                    joints_data = torch.tensor(joints_data, dtype=torch.float32)
-                
-                    if imu_sample_rate != self.sample_rate:
-                        imu_data = T.Resample(imu_sample_rate, self.sample_rate)(imu_data.T).T
-                    if joints_sample_rate != self.sample_rate:
-                        joints_data = T.Resample(joints_sample_rate, self.sample_rate)(joints_data.T).T
-                
-                    dataset_length = min(imu_data.shape[0], joints_data.shape[0])
-                    imu_data = imu_data[:dataset_length]
-                    joints_data = joints_data[:dataset_length]
-                
-                    imu_data = (imu_data - imu_data.mean(dim=0)) / imu_data.std(dim=0)
-                    joints_data = (joints_data - joints_data.mean(dim=0)) / joints_data.std(dim=0)      
-                
-                    #combine imu and joint data
-                    combined_data = torch.cat((imu_data, joints_data), dim=1)  # stack [time_steps, emg_channels + joint_channels]
-                    
-                    #add the combined data to the patient data list
-                    patient_data_list.append(combined_data)
-            
-                #add to the list of total data 
-                totaldata_list.append(patient_data_list)
-        
-            #define total dataset
-            result = [torch.stack(patient_data_list) for patient_data_list in totaldata_list]
-            
-            #return processed list
-            return result
+        if self.input_format == 'wav':
+            self._process_and_save_patients_wav(training_patients, "train")
+            self._process_and_save_patients_wav(testing_patients, "test")
+        elif self.input_format == 'csv':
+            self._process_and_save_patients_csv(training_patients, "train")
+            self._process_and_save_patients_csv(testing_patients, "test")
+        else:
+            raise ValueError(f"Unsupported input format: {self.input_format}")
 
-        training_patient_list = process_patients(training_patients)
-        testing_patient_list = process_patients(testing_patients)
-        
-        #return training and testing patient data list
-        return training_patient_list, testing_patient_list 
-    
-    #function to window data
-    def window_data(self, type_list, split):
-        
-        #where to send windowed data
-        if split == "train":
-            dataset_folder = os.path.join(self.config.dataset_root, self.config.dataset_train_name)
-        if split == "test":
-            dataset_folder = os.path.join(self.config.dataset_root, self.config.dataset_test_name)
-            
-        #window size
-        window_size = self.config.window_length
-        
-        #where to store all windowed data
-        all_data_windowed = []
-        
-        # To store information about each window
-        data_info_list = []  
+    def _process_and_save_patients_wav(self, patient_id_list, split):
+        for patient_id in tqdm(patient_id_list, desc=f"Processing {split} patients"):
+            for session_index in tqdm(range(self.config.num_sessions), desc=f"Processing sessions for {patient_id}", leave=False):
+                imu_data, imu_sample_rate = self._load_wav_file(patient_id, session_index, "IMU")
+                joints_data, joints_sample_rate = self._load_wav_file(patient_id, session_index, "JOINTS")
 
-        #if where to send windowed data doesn't exist
-        if not os.path.exists(dataset_folder):
-            os.makedirs(dataset_folder)
-        
-        #n patients
-        patient_counter = 0       
-        
-        #for patient in data from above
-        for patient_data in type_list:
-            
-            #num of sessions
-            session_counter = 0
-            
-            #for each session in patient data
-            for session_data in patient_data:
-                
-                #for windowing size within length of session data
-                for i in range(0, len(session_data), window_size):
-                    
-                    #create windowed data
-                    windowed_data = session_data[i:i+window_size]
-                    
-                    # Skip the last window if it's smaller than the window size
-                    if windowed_data.shape[0] < window_size:
-                        continue
-                    
-                    # Convert windowed data to NumPy array if it is a tensor
-                    if isinstance(windowed_data, torch.Tensor):
-                        windowed_data = windowed_data.cpu().numpy()
-                    
-                    #set and send windowed data to folder location
-                    file_name = f"patient_{patient_counter}_session_{session_counter}_window_{i}.wav"
-                    file_path = os.path.join(dataset_folder, file_name)
-                    wavfile.write(file_path, self.sample_rate, windowed_data)
-                    
-                    # Append info to list
-                    data_info_list.append({"file_name": file_name, "file_path": file_path})
-                    
-                    #notify finished windowed data
-                    print(f"Saved window to {file_path}")
-                
-                #session check
-                session_counter += 1
-            
-            #patient check
-            patient_counter += 1
+                imu_data = self._resample_data(imu_data, imu_sample_rate)
+                joints_data = self._resample_data(joints_data, joints_sample_rate)
 
-        # Convert list to DataFrame
+                combined_data = torch.cat((imu_data, joints_data), dim=1)
+                self._save_windowed_data(combined_data, patient_id, session_index, split)
+
+    def _load_wav_file(self, patient_id, session_index, file_type):
+        file_path = os.path.join(self.data_folder_path, patient_id, f"run{session_index}_{file_type}.wav")
+        data, sample_rate = get_data_from_wav_file(file_path)
+        return torch.tensor(data, dtype=torch.float32), sample_rate
+
+    def _resample_data(self, data, sample_rate):
+        if sample_rate != self.sample_rate:
+            data = T.Resample(sample_rate, self.sample_rate)(data.T).T
+        return data
+
+    def _process_and_save_patients_csv(self, patient_id_list, split):
+        for patient_id in tqdm(patient_id_list, desc=f"Processing {split} patients"):
+            patient_files = os.listdir(os.path.join(self.data_folder_path, patient_id, "combined"))
+            for session_file in tqdm(patient_files, desc=f"Processing sessions for {patient_id}", leave=False):
+                data = pd.read_csv(os.path.join(self.data_folder_path, patient_id, "combined", session_file))
+                self._save_windowed_data(data, patient_id, session_file.split('.')[0], split, is_csv=True)
+
+    def _save_windowed_data(self, data, patient_id, session_id, split, is_csv=False):
+        dataset_name = f"{self.config.dataset_name}_wl{self.window_length}_ol{self.window_overlap}_np{self.num_patients}"
+        dataset_folder = os.path.join(self.config.dataset_root, dataset_name, self.config.dataset_train_name if split == "train" else self.config.dataset_test_name)
+        os.makedirs(dataset_folder, exist_ok=True)
+
+        window_size = self.window_length
+        overlap = self.window_overlap
+        step_size = window_size - overlap
+
+        data_info_list = []
+
+        for i in tqdm(range(0, len(data) - window_size + 1, step_size), desc=f"Windowing data for {patient_id}_{session_id}", leave=False):
+            windowed_data = data.iloc[i:i+window_size] if is_csv else data[i:i+window_size]
+            if windowed_data.shape[0] < window_size:
+                continue
+
+            windowed_data_np = windowed_data.to_numpy() if is_csv else windowed_data.cpu().numpy()
+            file_name = f"{patient_id}_session_{session_id}_window_{i}_ws{window_size}_ol{overlap}.csv"
+            file_path = os.path.join(dataset_folder, file_name)
+            pd.DataFrame(windowed_data_np, columns=data.columns if is_csv else None).to_csv(file_path, index=False)
+            data_info_list.append({"file_name": file_name, "file_path": file_path})
+
         data_info_df = pd.DataFrame(data_info_list)
+        data_info_df.to_csv(os.path.join(self.config.dataset_root, dataset_name, f"{split}_info.csv"), index=False, mode='a', header=not os.path.exists(os.path.join(self.config.dataset_root, dataset_name, f"{split}_info.csv")))
 
-        #return windowed data path 
-        return data_info_df
-    
-    #function to save windowed data to config specified destination
-    def save_windowed_data(self, type_list, split):
+if __name__ == "__main__":
+    import sys  # you need this to add path to utils folder
+    sys.path.append('../utils')
+    from configs import config_general
 
-        #start process
-        print(f"Saving windowed data to {self.config.dataset_root}")
-        
-        #window data
-        data_info_df = self.window_data(type_list, split)
-        
-        #training dataset
-        if split == "train":
-            data_info_df.to_csv(os.path.join(self.config.dataset_root, f"{self.config.dataset_train_name}_info.csv"))
-            
-        #testing dataset
-        if split == "test":
-            data_info_df.to_csv(os.path.join(self.config.dataset_root, f"{self.config.dataset_test_name}_info.csv"))
-            
-        #end process
-        print(f"Saved windowed data to {self.config.dataset_root}")
+    config = config_general(
+        data_folder_name="../../datacollection/vicon",
+        dataset_root="../../datasets",
+        dataset_name="two_subject",
+        window_length=100,
+        window_overlap=50,
+        input_format="csv",
+        num_patients=2,
+    )
+    data_sharder = DataSharder(config)
+    data_sharder.load_data()

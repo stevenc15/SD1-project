@@ -1,0 +1,8 @@
+name: opensim_scripting
+channels:
+  - defaults
+dependencies:
+  - numpy=1.20.2
+  - python=3.8
+  - matplotlib
+  - spyder
