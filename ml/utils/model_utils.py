@@ -3,6 +3,55 @@ import torch
 from matplotlib import pyplot as plt
 import numpy as np
 
+# Plotting function
+def plot_data_kinelight(x, y, config, scaler, title_prefix):
+    imu_channels = config.channels_imu
+    joint_channels = config.channels_joints
+
+    num_imu_channels = len(imu_channels)
+    num_joint_channels = len(joint_channels)
+
+    fig, axs = plt.subplots(num_imu_channels + num_joint_channels, 2, figsize=(15, (num_imu_channels + num_joint_channels) * 5))
+    
+    # Plot normalized IMU data
+    for i, channel in enumerate(imu_channels):
+        axs[i, 0].plot(x[0, :, i].cpu().numpy())
+        axs[i, 0].set_title(f"{title_prefix} - Normalized IMU Channel: {channel}")
+        axs[i, 0].set_xlabel("Time")
+        axs[i, 0].set_ylabel("Amplitude")
+
+    # Plot normalized Joint data
+    for i, channel in enumerate(joint_channels):
+        axs[i + num_imu_channels, 0].plot(y[0, :, i].cpu().numpy())
+        axs[i + num_imu_channels, 0].set_title(f"{title_prefix} - Normalized Joint Channel: {channel}")
+        axs[i + num_imu_channels, 0].set_xlabel("Time")
+        axs[i + num_imu_channels, 0].set_ylabel("Amplitude")
+
+    # Concatenate IMU and Joint data for inverse scaling
+    combined_data_normalized = np.concatenate([x[0].cpu().numpy(), y[0].cpu().numpy()], axis=1)
+    combined_data_unnormalized = scaler.inverse_transform(combined_data_normalized)
+
+    # Split the unnormalized data back into IMU and Joint
+    imu_data_unnormalized = combined_data_unnormalized[:, :num_imu_channels]
+    joint_data_unnormalized = combined_data_unnormalized[:, num_imu_channels:]
+
+    # Plot unnormalized IMU data
+    for i, channel in enumerate(imu_channels):
+        axs[i, 1].plot(imu_data_unnormalized[:, i])
+        axs[i, 1].set_title(f"{title_prefix} - Unnormalized IMU Channel: {channel}")
+        axs[i, 1].set_xlabel("Time")
+        axs[i, 1].set_ylabel("Amplitude")
+
+    # Plot unnormalized Joint data
+    for i, channel in enumerate(joint_channels):
+        axs[i + num_imu_channels, 1].plot(joint_data_unnormalized[:, i])
+        axs[i + num_imu_channels, 1].set_title(f"{title_prefix} - Unnormalized Joint Channel: {channel}")
+        axs[i + num_imu_channels, 1].set_xlabel("Time")
+        axs[i + num_imu_channels, 1].set_ylabel("Amplitude")
+
+    plt.tight_layout()
+    plt.show()
+
 #function to plot predictions MODEL
 def plot_predictions(inputs, targets, predictions, num_channels=3):
     fig, axs = plt.subplots(num_channels, 1, figsize=(10, 8))

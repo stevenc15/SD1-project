@@ -1,3 +1,4 @@
 datacollection/.archive/EMG-data.csv
 datasets
 datacollection/vicon
+**/__pycache__
