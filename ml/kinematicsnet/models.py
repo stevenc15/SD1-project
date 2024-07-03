@@ -2,173 +2,137 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class RegularizedLinear(nn.Module):
-    def __init__(self, in_features, out_features, weight_decay=0.001):
-        super(RegularizedLinear, self).__init__()
-        self.linear = nn.Linear(in_features, out_features)
-        self.weight_decay = weight_decay
 
-    def forward(self, input):
-        return self.linear(input)
-
-    def regularizer_loss(self):
-        return self.weight_decay * torch.sum(self.linear.bias ** 2)
-
-class Encoder_GRU(nn.Module):
+class Encoder_1(nn.Module):
     def __init__(self, input_dim, dropout):
-        super(Encoder_GRU, self).__init__()
-        self.lstm_1 = nn.GRU(input_dim, 128, bidirectional=True, batch_first=True, dropout=0.0)
-        self.lstm_2 = nn.GRU(256, 64, bidirectional=True, batch_first=True, dropout=0.0)
-        self.flatten = nn.Flatten()
-        self.fc = nn.Linear(128, 32)
-        self.dropout_1 = nn.Dropout(dropout)
-        self.dropout_2 = nn.Dropout(dropout)
+        super(Encoder_1, self).__init__()
+        self.lstm_1 = nn.LSTM(input_dim, 16, bidirectional=True, batch_first=True, dropout=0.0)
+        self.lstm_2 = nn.LSTM(32, 8, bidirectional=True, batch_first=True, dropout=0.0)
+        self.flatten=nn.Flatten()
+        self.dropout_1=nn.Dropout(dropout)
+        self.dropout_2=nn.Dropout(dropout)
+
 
     def forward(self, x):
         out_1, _ = self.lstm_1(x)
-        out_1 = self.dropout_1(out_1)
+        out_1=self.dropout_1(out_1)
         out_2, _ = self.lstm_2(out_1)
-        out_2 = self.dropout_2(out_2)
-        out_2 = self.flatten(out_2)
+        out_2=self.dropout_2(out_2)
+
         return out_2
 
-class Encoder_GRU_cnn(nn.Module):
+class Encoder_2(nn.Module):
     def __init__(self, input_dim, dropout):
-        super(Encoder_GRU_cnn, self).__init__()
-        self.lstm_1 = nn.GRU(input_dim, 128, bidirectional=True, batch_first=True, dropout=0.0)
-        self.lstm_2 = nn.GRU(256, 64, bidirectional=True, batch_first=True, dropout=0.0)
-        self.flatten = nn.Flatten()
-        self.fc = nn.Linear(128, 32)
-        self.dropout_1 = nn.Dropout(dropout)
-        self.dropout_2 = nn.Dropout(dropout)
-        self.output_GRU = nn.Linear(w * 128, 6 * w)
+        super(Encoder_2, self).__init__()
+        self.lstm_1 = nn.GRU(input_dim, 16, bidirectional=True, batch_first=True, dropout=0.0)
+        self.lstm_2 = nn.GRU(32, 8, bidirectional=True, batch_first=True, dropout=0.0)
+        self.flatten=nn.Flatten()
+        self.dropout_1=nn.Dropout(dropout)
+        self.dropout_2=nn.Dropout(dropout)
+
 
     def forward(self, x):
         out_1, _ = self.lstm_1(x)
-        out_1 = self.dropout_1(out_1)
+        out_1=self.dropout_1(out_1)
         out_2, _ = self.lstm_2(out_1)
-        out_2 = self.dropout_2(out_2)
-        out_2 = self.flatten(out_2)
+        out_2=self.dropout_2(out_2)
+
         return out_2
 
-class Encoder_CNN_1D(nn.Module):
-    def __init__(self, input_size, dropout, hidden_dim=64, output_size=128, kernel_size=3, stride=1, padding=1):
-        super().__init__()
-        self.conv1 = nn.Conv1d(input_size, hidden_dim, kernel_size, stride, padding)
-        self.conv2 = nn.Conv1d(hidden_dim, hidden_dim, kernel_size, stride, padding)
-        self.conv3 = nn.Conv1d(hidden_dim, output_size, kernel_size, stride, padding)
-        self.conv4 = nn.Conv1d(output_size, output_size, kernel_size, stride, padding)
-        self.BN_2 = nn.BatchNorm1d(hidden_dim)
-        self.BN_4 = nn.BatchNorm1d(output_size)
-        self.dropout = nn.Dropout(dropout)
-        self.pool = nn.MaxPool1d(kernel_size=2)
+class GatingModule(nn.Module):
+    def __init__(self, input_size):
+        super(GatingModule, self).__init__()
+        self.gate = nn.Sequential(
+            nn.Linear(2*input_size, input_size),
+            nn.Sigmoid()
+        )
 
-        # Fully connected layers
-        self.fc1 = nn.Linear(128, 64)
-        self.dropout1 = nn.Dropout(0.2)
-        self.fc2 = nn.Linear(64, 32)
-        self.dropout2 = nn.Dropout(0.2)
-        self.flatten = nn.Flatten()
+    def forward(self, input1, input2):
+        # Apply gating mechanism
+        gate_output = self.gate(torch.cat((input1,input2),dim=-1))
 
-        self.model_2 = Encoder_GRU_cnn(12, 0.40)
+        # Scale the inputs based on the gate output
+        gated_input1 = input1 * gate_output
+        gated_input2 = input2 * (1 - gate_output)
 
-    def forward(self, x, x_1):
-        x = x.transpose(1, 2)  # reshape from (batch_size, seq_len, input_size) to (batch_size, input_size, seq_len)
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x))
-        x = self.BN_2(x)
-        x = self.pool(x)
-        x = F.relu(self.conv3(x))
-        x = F.relu(self.conv4(x))
-        x = self.BN_4(x)
-        x = self.pool(x)
-        x = x.transpose(1, 2)  # reshape back to (batch_size, seq_len, output_size)
+        # Combine the gated inputs
+        output = gated_input1 + gated_input2
+        return output
 
-        x = F.relu(self.fc1(x))
-        x = self.dropout1(x)
-        x = F.relu(self.fc2(x))
-        x = self.dropout2(x)
-        x = self.flatten(x)
+class Kinematics_lightweight(nn.Module):
+    def __init__(self, input_acc, input_gyr,drop_prob=0.05):
+        super(Kinematics_lightweight, self).__init__()
 
-        model_2_output = self.model_2(x_1)
-        model_2_output = torch.cat([model_2_output, x], dim=-1)
+        self.encoder_1_acc=Encoder_1(input_acc, drop_prob)
+        self.encoder_1_gyr=Encoder_1(input_gyr, drop_prob)
 
-        return model_2_output
+        self.encoder_2_acc=Encoder_2(input_acc, drop_prob)
+        self.encoder_2_gyr=Encoder_2(input_gyr, drop_prob)
 
-class Encoder_CNN_2D(nn.Module):
-    def __init__(self, input_size, dropout, hidden_dim=64, output_size=128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)):
-        super().__init__()
-        self.conv1 = nn.Conv2d(input_size, hidden_dim, kernel_size, stride, padding)
-        self.conv2 = nn.Conv2d(hidden_dim, output_size, kernel_size, stride, padding)
-        self.BN_2 = nn.BatchNorm2d(hidden_dim)
-        self.BN_4 = nn.BatchNorm2d(output_size)
-        self.dropout = nn.Dropout(dropout)
-        self.pool = nn.MaxPool2d(kernel_size=(2, 2))
+        self.BN_acc= nn.BatchNorm1d(input_acc, affine=False)
+        self.BN_gyr= nn.BatchNorm1d(input_gyr, affine=False)
 
-        # Fully connected layers
-        self.fc1 = nn.Linear(128, 64)
-        self.dropout1 = nn.Dropout(0.2)
-        self.fc2 = nn.Linear(64, 32)
-        self.dropout2 = nn.Dropout(0.2)
-        self.flatten = nn.Flatten()
+        self.fc = nn.Linear(2*2*16+16,1)
 
-        self.model_3 = Encoder_GRU_cnn(12, 0.40)
+        self.dropout=nn.Dropout(p=0.05)
 
-    def forward(self, x, x_1):
-        x = x.transpose(1, 3)  # reshape from (batch_size, seq_len, input_size) to (batch_size, input_size, seq_len)
-        x = F.relu(self.conv1(x))
-        x = self.BN_2(x)
-        x = self.pool(x)
-        x = F.relu(self.conv2(x))
-        x = self.BN_4(x)
-        x = self.pool(x)
-        x = x.transpose(1, 3)  # reshape back to (batch_size, seq_len, output_size)
+        self.gate_1=GatingModule(16)
+        self.gate_2=GatingModule(16)
+        self.gate_3=GatingModule(16)
 
-        x = F.relu(self.fc1(x))
-        x = self.dropout1(x)
-        x = F.relu(self.fc2(x))
-        x = self.dropout2(x)
-        x = self.flatten(x)
+        self.fc_kd = nn.Linear(2*16, 16)
 
-        model_3_output = self.model_3(x_1)
-        model_3_output = torch.cat([model_3_output, x], dim=-1)
+        # Define the gating network
+        self.weighted_feat = nn.Sequential(
+            nn.Linear(16, 1),
+            nn.Sigmoid())
 
-        return model_3_output
+        self.attention=nn.MultiheadAttention(2*16,4,batch_first=True)
+        self.gating_net = nn.Sequential(nn.Linear(16*2, 2*16), nn.Sigmoid())
+        self.gating_net_1 = nn.Sequential(nn.Linear(2*2*16+16, 2*2*16+16), nn.Sigmoid())
 
-class Gait_Net(nn.Module):
-    def __init__(self, input_shape_1D, input_shape_2D, w):
-        super(Gait_Net, self).__init__()
-        self.w = w
 
-        # 1D Models
-        self.model_1 = Encoder_GRU(12, 0.40)
-        self.cnn_1D = Encoder_CNN_1D(input_shape_1D, 0.40)
-        self.cnn_2D = Encoder_CNN_2D(input_shape_2D, 0.40)
+    def forward(self, x_acc, x_gyr,w=100):
 
-        self.BN_1D = nn.BatchNorm1d(input_shape_1D, affine=False)
-        self.BN_2D = nn.BatchNorm2d(input_shape_2D, affine=False)
+        x_acc_1=x_acc.view(x_acc.size(0)*x_acc.size(1),x_acc.size(-1))
+        x_gyr_1=x_gyr.view(x_gyr.size(0)*x_gyr.size(1),x_gyr.size(-1))
 
-        self.output_GRU = RegularizedLinear(w * 128, 6 * w)
-        self.output_C1 = RegularizedLinear(25 * 32 + w * 128, 6 * w)
-        self.output_C2 = RegularizedLinear(25 * 32 + w * 128, 6 * w)
+        x_acc_1=self.BN_acc(x_acc_1)
+        x_gyr_1=self.BN_gyr(x_gyr_1)
 
-    def forward(self, inputs_1D_N, inputs_2D_N):
-        input_1D_N_1 = inputs_1D_N.transpose(1, 2)
-        input_1D_N_1 = self.BN_1D(input_1D_N_1)
-        input_1D_N = input_1D_N_1.transpose(1, 2)
+        x_acc_2=x_acc_1.view(-1, w, x_acc_1.size(-1))
+        x_gyr_2=x_gyr_1.view(-1, w, x_gyr_1.size(-1))
 
-        inputs_2D_N = inputs_2D_N.transpose(1, 3)
-        inputs_2D_N = self.BN_2D(inputs_2D_N)
-        inputs_2D_N = inputs_2D_N.transpose(1, 3)
+        x_acc_1=self.encoder_1_acc(x_acc_2)
+        x_gyr_1=self.encoder_1_gyr(x_gyr_2)
 
-        model_1_output = self.model_1(inputs_1D_N)
-        model_2_output = self.cnn_1D(inputs_1D_N, inputs_1D_N)
-        model_3_output = self.cnn_2D(inputs_2D_N, inputs_1D_N)
+        x_acc_2=self.encoder_2_acc(x_acc_2)
+        x_gyr_2=self.encoder_2_gyr(x_gyr_2)
 
-        output_GRU = self.output_GRU(model_1_output).view(-1, w, 6)
-        output_C2 = self.output_C1(model_2_output).view(-1, w, 6)
-        output_C1 = self.output_C2(model_3_output).view(-1, w, 6)
+        x_acc=self.gate_1(x_acc_1,x_acc_2)
+        x_gyr=self.gate_2(x_gyr_1,x_gyr_2)
 
-        output = (output_GRU + output_C2 + output_C1) / 3
+        x=torch.cat((x_acc,x_gyr),dim=-1)
 
-        return output_GRU, output_C1, output_C2, output
+        x_kd=self.fc_kd(x)
+        out_1, attn_output_weights=self.attention(x,x,x)
+        gating_weights = self.gating_net(x)
+        out_2=gating_weights*x
+
+        weights_1 = self.weighted_feat(x[:,:,0:16])
+        weights_2 = self.weighted_feat(x[:,:,16:2*16])
+
+        x_1=weights_1*x[:,:,0:16]
+        x_2=weights_2*x[:,:,16:2*16]
+
+        out_3=x_1+x_2
+
+        out=torch.cat((out_1,out_2,out_3),dim=-1)
+
+        gating_weights_1 = self.gating_net_1(out)
+        out_f=gating_weights_1*out
+
+        out=self.fc(out_f)
+
+        return out
+

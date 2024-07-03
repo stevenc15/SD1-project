@@ -100,8 +100,8 @@ def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='ti
             print(f"No matching CSV file found for {mot_file}")
 
 def main():
-    mot_folder = "vicon/subject_1/processed/"
-    csv_folder = "vicon/subject_1/sensors/"
+    mot_folder = "vicon/subject_2/processed/"
+    csv_folder = "vicon/subject_2/sensors/"
     output_folder = "vicon/subject_1/combined/"
 
     combine_and_save_data(mot_folder, csv_folder, output_folder)
