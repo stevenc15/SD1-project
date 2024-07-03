@@ -78,10 +78,11 @@ def train_kinematics(device, train_loader, val_loader, learn_rate, EPOCHS, model
 
 
             optimizer.zero_grad()
-
+            print(f"data_features_1D shape: {data_features_1D.shape}")
+            print(f"data_features_2D shape: {data_features_2D.shape}")
+            print(f"data_targets shape: {data_targets.shape}")
             output_1, output_2, output_3, output= model(data_features_1D[:,:,k_1:k_2].to(device).float(),data_features_2D[:,:,:,k_3:k_4].to(device).float())
-            print (output.shape)
-            print(data_targets.shape)
+            print(f"output: {output.shape}")
             loss=criterion(output, data_targets.to(device).float())
 
             loss.backward()
