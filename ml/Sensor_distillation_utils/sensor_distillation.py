@@ -7,7 +7,7 @@ import torch #for making, training the model and processing the data in pytorch
 
 from loss import RMSELoss
 
-def train_SD(model, alpha, device, val_loader, train_loader, learn_rate, EPOCHS, student, teacher, filename, k_1s, k_2s, k_3s, k_4s, k_1t, k_2t, k_3t, k_4t):
+def train_SD(device, alpha, val_loader, train_loader, learn_rate, EPOCHS, student, teacher, filename, k_1s, k_2s, k_3s, k_4s, k_1t, k_2t, k_3t, k_4t):
 
     if torch.cuda.is_available():
       student.cuda()

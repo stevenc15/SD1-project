@@ -29,9 +29,9 @@ class student(nn.Module):
         # inputs_2D_N=self.BN_2D(inputs_2D_N)
         # inputs_2D_N=inputs_2D_N.transpose(1,3)
 
-        output_GRU = self.model_1(inputs_1D_N, self.w)
-        output_C2 = self.cnn_1D(inputs_1D_N,inputs_1D_N, self.w)
-        output_C1 = self.cnn_2D(inputs_1D_N,inputs_2D_N, self.w)
+        output_GRU = self.model_1(inputs_1D_N)
+        output_C2 = self.cnn_1D(inputs_1D_N,inputs_1D_N)
+        output_C1 = self.cnn_2D(inputs_1D_N,inputs_2D_N)
 
 
         output = (output_GRU +output_C2+output_C1)/3
