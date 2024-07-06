@@ -70,7 +70,13 @@ def interpolate_mot_to_sensor_time(mot_df, sensor_df, time_column):
     interpolated_mot_df = pd.DataFrame(interpolated_mot_data)
     return interpolated_mot_df
 
-def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='time'):
+def downsample_sensor_data(sensor_df, target_len):
+    current_len = len(sensor_df)
+    indices = np.linspace(0, current_len - 1, target_len).astype(int)
+    downsampled_df = sensor_df.iloc[indices].reset_index(drop=True)
+    return downsampled_df
+
+def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='time', method='interpolate'):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     
@@ -88,9 +94,13 @@ def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='ti
             sensor_df = load_sensor_csv(csv_path)
             cleaned_sensor_df = clean_sensor_data(sensor_df)
             
-            interpolated_mot_df = interpolate_mot_to_sensor_time(mot_df, cleaned_sensor_df, time_column)
+            if method == 'interpolate':
+                processed_mot_df = interpolate_mot_to_sensor_time(mot_df, cleaned_sensor_df, time_column)
+                combined_df = pd.concat([processed_mot_df, cleaned_sensor_df], axis=1)
+            elif method == 'downsample':
+                downsampled_sensor_df = downsample_sensor_data(cleaned_sensor_df, len(mot_df))
+                combined_df = pd.concat([mot_df, downsampled_sensor_df], axis=1)
             
-            combined_df = pd.concat([interpolated_mot_df, cleaned_sensor_df], axis=1)
             combined_df = combined_df.loc[:, ~combined_df.columns.duplicated()]
 
             output_path = os.path.join(output_folder, f"{base_name}_combined.csv")
@@ -100,11 +110,12 @@ def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='ti
             print(f"No matching CSV file found for {mot_file}")
 
 def main():
-    mot_folder = "vicon/subject_2/processed/"
-    csv_folder = "vicon/subject_2/sensors/"
-    output_folder = "vicon/subject_1/combined/"
+    mot_folder = "vicon/subject_1/processed/"
+    csv_folder = "vicon/subject_1/sensors/"
+    output_folder = "vicon/subject_1/combined_downsampled/"
+    method = 'downsample'
 
-    combine_and_save_data(mot_folder, csv_folder, output_folder)
+    combine_and_save_data(mot_folder, csv_folder, output_folder, method=method)
 
 if __name__ == "__main__":
     main()
