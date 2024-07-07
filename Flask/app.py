@@ -1,8 +1,9 @@
 from flask import Flask, jsonify
 import soundfile as sf
 import os
-import json
+# import json
 from flask_cors import CORS
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -39,6 +40,10 @@ def load_imu_data():
     
     data_imu, sample_rate_imu = sf.read(path)
 
+def load_data():
+     data = pd.read_excel('/P001_T001_armSwing_fast_combined.xlsx')
+     print(data)
+
 # Loading joint data
 load_joint_data()    
 load_imu_data()
@@ -55,11 +60,6 @@ def get_joint_data():
         }
 
         json_obj = jsonify(response)
-        
-        # mock data for tyler
-        # json_str = json.dumps(response)
-        # with open('joint_data.json', 'w') as file:
-        #     file.write(json_str)
 
         return json_obj
     

@@ -1,4 +1,2 @@
-./Flask/__pycache__/
-
-.env/
-node_modules
+.env
+P001_T001_armSwing_fast_combined.xlsx
