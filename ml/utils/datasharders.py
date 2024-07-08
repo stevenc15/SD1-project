@@ -92,7 +92,7 @@ if __name__ == "__main__":
     config = config_general(
         data_folder_name="../../datacollection/vicon",
         dataset_root="../../datasets",
-        dataset_name="two_subject",
+        dataset_name="two_subject_downsampled",
         window_length=100,
         window_overlap=50,
         input_format="csv",

@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import os
-#from tqdm import tqdm
 import warnings
+from tqdm import tqdm
 
 # Suppress specific warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -20,13 +20,11 @@ def load_sensor_csv(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
     
+    # Adjust lines to properly handle headers and data
     data_lines = lines[3:]
     columns = data_lines[0].strip().split(',')
     units = data_lines[1].strip().split(',')
     data = data_lines[2:]
-
-    columns = [col.strip() for col in columns]
-    units = [unit.strip() for unit in units]
 
     data_rows = []
     for line in data:
@@ -100,6 +98,8 @@ def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='ti
             elif method == 'downsample':
                 downsampled_sensor_df = downsample_sensor_data(cleaned_sensor_df, len(mot_df))
                 combined_df = pd.concat([mot_df, downsampled_sensor_df], axis=1)
+                # Remove the second header row
+                combined_df = combined_df.iloc[1:].reset_index(drop=True)
             
             combined_df = combined_df.loc[:, ~combined_df.columns.duplicated()]
 
@@ -110,9 +110,9 @@ def combine_and_save_data(mot_folder, csv_folder, output_folder, time_column='ti
             print(f"No matching CSV file found for {mot_file}")
 
 def main():
-    mot_folder = "vicon/subject_1/processed/"
-    csv_folder = "vicon/subject_1/sensors/"
-    output_folder = "vicon/subject_1/combined_downsampled/"
+    mot_folder = "vicon/subject_2/processed/"
+    csv_folder = "vicon/subject_2/sensors/"
+    output_folder = "vicon/subject_2/combined/"
     method = 'downsample'
 
     combine_and_save_data(mot_folder, csv_folder, output_folder, method=method)
