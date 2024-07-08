@@ -1,4 +1,5 @@
 ./Flask/__pycache__/
+./Flask/models/__pycache__
 
 .env/
 node_modules

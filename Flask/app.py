@@ -1,9 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import soundfile as sf
 import os
+from models.arm_model import ArmModel
 # import json
 from flask_cors import CORS
-import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -40,9 +40,6 @@ def load_imu_data():
     
     data_imu, sample_rate_imu = sf.read(path)
 
-def load_data():
-     data = pd.read_excel('/P001_T001_armSwing_fast_combined.xlsx')
-     print(data)
 
 # Loading joint data
 load_joint_data()    
@@ -115,6 +112,27 @@ def get_next_imu_point():
     }
     current_imu_index += 1
     return jsonify(response)
+
+@app.route('/get_arm_data', methods=['GET'])
+def get_arm_data():
+     file = 'P001_T001_armSwing_fast_combined.xlsx'
+     arm_model = ArmModel(file)
+     data = arm_model.get_data_from_file()
+     return jsonify(data)
+
+file = 'P001_T001_armSwing_fast_combined.xlsx'
+arm_model = ArmModel(file)
+@app.route('/get_single_point', methods=['GET'])
+def get_single_point():
+    idx = int(request.args.get('index', 0))
+
+    data_point = arm_model.get_data_point(idx)
+    # idx =+ 1
+    if data_joint is not None:
+         return jsonify(data_point)
+    else:
+         return jsonify({'error': 'Index out of range'}), 400
+          
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
