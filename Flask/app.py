@@ -1,8 +1,12 @@
-from flask import Flask, jsonify, request
+# These two imports is for the mock data for the live chart
+from random import random
+from time import time
+# mock data ends here
+from flask import Flask, jsonify, make_response, request
 import soundfile as sf
 import os
 from models.arm_model import ArmModel
-# import json
+import json
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -121,7 +125,7 @@ def get_arm_data():
      return jsonify(data)
 
 file = 'P001_T001_armSwing_fast_combined.xlsx'
-arm_model = ArmModel(file)
+# arm_model = ArmModel(file)
 @app.route('/get_single_point', methods=['GET'])
 def get_single_point():
     idx = int(request.args.get('index', 0))
@@ -132,6 +136,15 @@ def get_single_point():
          return jsonify(data_point)
     else:
          return jsonify({'error': 'Index out of range'}), 400
+    
+# Mock endpoint for live data generator
+@app.route('/data', methods=["GET", "POST"])
+def data():
+    #  mock data
+    data = [time() * 1000, random()*100]
+    response = make_response(json.dumps(data))
+    response.content_type = 'application/json'
+    return response
           
 
 if __name__ == '__main__':
