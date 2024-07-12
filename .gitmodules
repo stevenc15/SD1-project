@@ -10,3 +10,6 @@
 # [submodule "ml/repos/Deep-Belief-Networks-in-PyTorch"]
 # 	path = ml/repos/Deep-Belief-Networks-in-PyTorch
 # 	url = https://github.com/AmanPriyanshu/Deep-Belief-Networks-in-PyTorch.git
+[submodule "ml/repos/ncps"]
+	path = ml/repos/ncps
+	url = https://github.com/mlech26l/ncps.git
