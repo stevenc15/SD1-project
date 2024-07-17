@@ -1,6 +1,7 @@
 // src/components/LiveChart.tsx
 import React, { useRef, useEffect } from 'react';
 import Highcharts from 'highcharts';
+import DashboardBox from './DashboardBox';
 
 let chart: Highcharts.Chart;
 
@@ -19,7 +20,7 @@ const LiveChart: React.FC = () => {
       // const point = [new Date(date).getTime()];
       const point = [new Date(date).getTime(), value * 10];
       const series = chart.series[0];
-        const shift = series.data.length > 30; // shift if the series is longer than 20
+        const shift = series.data.length > 20; // shift if the series is longer than 20
         // add the point
         series.addPoint(point, true, shift);
       // call it again after one second
@@ -71,7 +72,7 @@ const LiveChart: React.FC = () => {
   },);
 
   return (
-    <div ref={containerRef} id="container"></div>
+    <DashboardBox ref={containerRef} id="container"></DashboardBox>
   );
 };
 
