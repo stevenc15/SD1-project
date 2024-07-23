@@ -1,4 +1,5 @@
 # These two imports is for the mock data for the live chart
+import math
 from random import random
 from time import time
 # mock data ends here
@@ -8,6 +9,9 @@ import os
 from models.arm_model import ArmModel
 import json
 from flask_cors import CORS
+import datetime
+import pandas as pd
+
 
 app = Flask(__name__)
 CORS(app)
@@ -145,6 +149,67 @@ def data():
     response = make_response(json.dumps(data))
     response.content_type = 'application/json'
     return response
+
+@app.route('/large_data', methods=["GET"])
+def large_data():
+    n = 64000
+    arr = []
+    current_year = datetime.datetime.utcnow().year
+    start_date = datetime.datetime(current_year, 1, 1)
+    i = 0
+    x = start_date - datetime.timedelta(hours=n)
+    for i in range(n):
+        if (i % 100 == 0): 
+            a = 2 * random()
+        
+        if (i % 1000 == 0): 
+            b = 2 * random()
+        
+        if (i % 10000 == 0): 
+            c = 2 * random()
+        
+        if (i % 50000 == 0): 
+            spike = 10
+        else: 
+            spike = 0
+
+        x = x + datetime.timedelta(hours=1)
+
+        x = x + datetime.timedelta(hours=1)
+        arr.append([
+            x.timestamp() * 1000,  # Convert to milliseconds
+            2 * math.sin(i / 100) + a + b + c + spike + random()
+        ])
+
+    print("array length: ", len(arr))
+    response = jsonify(arr)
+    return response
+
+@app.route('/sensor1_emg', methods=['GET'])
+def sensor1_emg():
+    n = 29975
+    df = pd.read_csv('sensor1_emg.csv')
+
+    if 'time' not in df.columns or 'IM EMG1' not in df.columns:
+        return jsonify({'error': 'Required columns'}), 400
+    
+    data = df[['time', 'IM EMG1']].head(n)
+    data = df.values.tolist()
+    return jsonify(data)
+
+@app.route('/joint_angle_pred', methods=['GET'])
+def joint_angle_pred():
+    df = pd.read_csv('joint_angle_pred.csv')
+    n = df.size
+
+    if 'time' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
+        return jsonify({'error': 'Required columns'}), 400
+    
+    data = df[['time', 'elbow_flex_r_pred']].head(n)
+    data = df.values.tolist()
+    return jsonify(data)
+
+
           
 
 if __name__ == '__main__':

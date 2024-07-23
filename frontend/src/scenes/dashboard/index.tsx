@@ -4,15 +4,12 @@ import Row2 from './Row2';
 import Row3 from './Row3';
 
 const gridTemplateLargeScreens = `
-    "a b c"
-    "a b c"    
-    "a b c"
-    "a b f"
-    "d e f"
-    "d h i"
-    "g h i"
-    "g h j"
-    "g h j"
+    "a a a"
+    "b c c"    
+    "b c c"
+    "d d d"
+    "d d d"
+    "d d d"
 `;
 
 const gridTemplateSmallScreens = `
@@ -56,7 +53,7 @@ const Dashboard = () => {
         sx={
             isAboveMediumScreens ? {
             gridTemplateColumns: "repeat(3, minmax(370px, 1fr))",
-            gridTemplateRows: "repeat(10, minmax(60px, 1fr))",
+            gridTemplateRows: "repeat(1, minmax(40px, 1fr))",
             gridTemplateAreas: gridTemplateLargeScreens,
         } : {
             gridAutoColumns: "1fr",
