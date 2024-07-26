@@ -9,9 +9,9 @@ type Props = {}
 const Row1 = (props: Props) => {
   return (
     <>
-        <DashboardBox gridArea="a">Sensor 1 Data </DashboardBox>
-        <DashboardBox gridArea="b"><LiveChart /> <StaticGraph /></DashboardBox>
-        <DashboardBox gridArea="c"> <SampleData></SampleData></DashboardBox>
+        <DashboardBox gridArea="a"></DashboardBox>
+        <DashboardBox gridArea="b">{/*<LiveChart /> <StaticGraph />*/}</DashboardBox>
+        <DashboardBox gridArea="c"> {/*<SampleData></SampleData>*/}</DashboardBox>
     </>
   )
 }

@@ -3,6 +3,10 @@ import Row1 from './Row1';
 import Row2 from './Row2';
 import Row3 from './Row3';
 import FlexBetween from '@/components/FlexBetween';
+import DashboardBox from '@/components/DashboardBox';
+import Row4 from './Row4';
+import Row5 from './Row5';
+import Row6 from './Row6';
 
 const gridTemplateLargeScreens = `
     "z z z"
@@ -61,36 +65,84 @@ const gridTemplateLargeScreens = `
 `;
 
 const gridTemplateSmallScreens = `
+    "z"
     "a"
     "a"
     "a"
     "a"
-    "b"
+    "a"
+    "a"
     "b"
     "b"
     "b"
     "c"
     "c"
     "c"
+    "g"
+    "d"
+    "d"
+    "d"
     "d"
     "d"
     "d"
     "e"
     "e"
+    "e"
     "f"
     "f"
     "f"
-    "g"
-    "g"
-    "g"
     "h"
-    "h"
-    "h"
-    "h"
+    "i"
+    "i"
+    "i"
+    "i"
     "i"
     "i"
     "j"
     "j"
+    "j"
+    "k"
+    "k"
+    "k"
+    "l"
+    "m"
+    "m"
+    "m"
+    "m"
+    "m"
+    "m"
+    "n"
+    "n"
+    "n"
+    "o"
+    "o"
+    "o"
+    "p"
+    "q"
+    "q"
+    "q"
+    "q"
+    "q"
+    "q"
+    "r"
+    "r"
+    "r"
+    "s"
+    "s"
+    "s"
+    "t"
+    "u"
+    "u"
+    "u"
+    "u"
+    "u"
+    "u"
+    "v"
+    "v"
+    "v"
+    "w"
+    "w"
+    "w"
 `;
 
 const Dashboard = () => {
@@ -111,37 +163,18 @@ const Dashboard = () => {
             gridAutoRows: "80px",
             gridTemplateAreas: gridTemplateSmallScreens,
         }}>
-            <Box backgroundColor="#fff" gridArea="z" width="200px">SENSOR 1</Box>
-            <Box backgroundColor="#fff" gridArea="a"></Box>
-            <Box backgroundColor="#fff" gridArea="b"></Box>
-            <Box backgroundColor="#fff" gridArea="c"></Box>
-            <Box backgroundColor="#fff" gridArea="d"></Box>
-            <Box backgroundColor="#fff" gridArea="e"></Box>
-            <Box backgroundColor="#fff" gridArea="f"></Box>
-            <Box backgroundColor="#fff" gridArea="g" width="200px">SENSOR 2</Box>
-            <Box backgroundColor="#fff" gridArea="h" width="200px">SENSOR 3 </Box>
-            <Box backgroundColor="#fff" gridArea="i"> </Box>
-            <Box backgroundColor="#fff" gridArea="j"> </Box>
-            <Box backgroundColor="#fff" gridArea="k"> </Box>
-            <Box backgroundColor="#fff" gridArea="l" width="200px">SENSOR 4 </Box>
-            <Box backgroundColor="#fff" gridArea="m"> </Box>
-            <Box backgroundColor="#fff" gridArea="n"> </Box>
-            <Box backgroundColor="#fff" gridArea="o"> </Box>
-            <Box backgroundColor="#fff" gridArea="p" width="200px">SENSOR 5 </Box>
-            <Box backgroundColor="#fff" gridArea="q"> </Box>
-            <Box backgroundColor="#fff" gridArea="r"> </Box>
-            <Box backgroundColor="#fff" gridArea="s"> </Box>
-            <Box backgroundColor="#fff" gridArea="t" width="200px">SENSOR 6 </Box>
-            <Box backgroundColor="#fff" gridArea="u"> </Box>
-            <Box backgroundColor="#fff" gridArea="v"> </Box>
-            <Box backgroundColor="#fff" gridArea="w"> </Box>
-
-            {/* <Box backgroundColor="#fff" gridArea="h"></Box> }
-            <Box backgroundColor="#fff" gridArea="i"></Box>
-            <Box backgroundColor="#fff" gridArea="j"></Box> }
-            {/* <Row1/> */}
-            {/* <Row2/>
-            <Row3/> */}
+            <DashboardBox gridArea="z" width="200px">SENSOR 1 </DashboardBox>
+            <Row1></Row1>
+            <DashboardBox gridArea="g" width="200px">SENSOR 2</DashboardBox>
+            <Row2></Row2>
+            <DashboardBox gridArea="h" width="200px">SENSOR 3 </DashboardBox>
+            <Row3></Row3>
+            <DashboardBox gridArea="l" width="200px">SENSOR 4 </DashboardBox>
+            <Row4></Row4>
+            <DashboardBox gridArea="p" width="200px">SENSOR 5 </DashboardBox>
+            <Row5></Row5>
+            <DashboardBox gridArea="t" width="200px">SENSOR 6 </DashboardBox>
+            <Row6></Row6>
         </Box>
   )
 }

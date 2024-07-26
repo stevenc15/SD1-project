@@ -3,13 +3,12 @@ import React from 'react'
 
 type Props = {}
 
-function Row3({}: Props) {
+function Row3(props: Props) {
   return (
     <>
-        <DashboardBox  gridArea="g"></DashboardBox>
-        <DashboardBox  gridArea="h"></DashboardBox>
-        <DashboardBox  gridArea="i"></DashboardBox>
-        <DashboardBox  gridArea="j"></DashboardBox>
+      <DashboardBox gridArea="i"> </DashboardBox>
+      <DashboardBox gridArea="j"> </DashboardBox>
+      <DashboardBox gridArea="k"> </DashboardBox>
     </>
   )
 }
