@@ -10,7 +10,7 @@ from models.arm_model import ArmModel
 import json
 from flask_cors import CORS
 import datetime
-import pandas as pd
+import pandas as pd 
 
 
 app = Flask(__name__)
@@ -128,7 +128,7 @@ def get_arm_data():
      data = arm_model.get_data_from_file()
      return jsonify(data)
 
-file = 'P001_T001_armSwing_fast_combined.xlsx'
+# file = 'P001_T001_armSwing_fast_combined.xlsx'
 # arm_model = ArmModel(file)
 @app.route('/get_single_point', methods=['GET'])
 def get_single_point():
