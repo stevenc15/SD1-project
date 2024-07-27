@@ -82,6 +82,9 @@ const Row2 = ({emg_data, imu_data}: Props) => {
             color: "#ffff"
           }
         },
+        credits: {
+          enabled: false
+        },
         series: [{
             type: 'spline',
             data: data,
@@ -155,6 +158,9 @@ const Row2 = ({emg_data, imu_data}: Props) => {
           itemStyle: {
             color: "#ffff"
           }
+        },
+        credits: {
+          enabled: false
         },
         series: [
           {
@@ -245,6 +251,9 @@ const Row2 = ({emg_data, imu_data}: Props) => {
           itemStyle: {
             color: "#ffff"
           }
+        },
+        credits: {
+          enabled: false
         },
         series: [
           {
