@@ -1,92 +1,98 @@
 import { Canvas } from '@react-three/fiber'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Select from 'react-select'
 import Model from '/public/Model'
+import { Box } from '@mui/material'
+import demo from '/public/IMG_2850.mov'
 
 function Predictions() {
 
-  const [childData1, setChildData1] = useState([]);
-  const [childData2, setChildData2] = useState([]);
-  const [recStatus, setRecStatus] = useState("0")
-  const [recStatusMessage, setRecStatMsg] = useState("Start Recording")
-  const [frame1, setFrame1] = useState(0)
-  const [frame2, setFrame2] = useState(0)
-  const [curFrame, setCurrentFrame] = useState("")
-  const [sensModel, setSensModel] = useState("6sensor")
-  //console.log(childData1)
-  //console.log(childData2)
+  const [angleData, setAngleData] = useState([]);
+  const [timeData, setTimeData] = useState([]);
 
-  const options = [
-    { value: '1sensor', label: '1 Sensor Model' },
-    { value: '6sensor', label: '6 Sensor Model' }
-  ]
+  const isPlaying = useRef(true)
+  const setPlay = () => {
+    isPlaying.current = ! isPlaying.current
+    console.log (isPlaying.current)
+  }
+  
+  const currentFrame = useRef(0)
+  const setFrame = () => {
+    console.log(currentFrame.current)
+  }
 
-  const jsonFileDownload = () => {
-    const yourArray = childData1
-    let json_data = JSON.stringify(yourArray);
-    const fileName = "joint_data.json";
-    const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
-    const jsonURL = window.URL.createObjectURL(data);
-    const link = document.createElement("a");
-    document.body.appendChild(link);
-    link.href = jsonURL;
-    link.setAttribute("download", fileName);
-    link.click();
-    document.body.removeChild(link);
-  };
+  setFrame();
 
-  const jsonFileDownloadRec = () => {
-    const yourArray2 = childData1.slice(frame1, frame2)
-    console.log(yourArray2)
-    let json_data = JSON.stringify(yourArray2);
-    const fileName = "joint_data.json";
-    const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
-    const jsonURL = window.URL.createObjectURL(data);
-    const link = document.createElement("a");
-    document.body.appendChild(link);
-    link.href = jsonURL;
-    link.setAttribute("download", fileName);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const updateRecStatus = () => {
-    if(recStatus % 3 == 0){
-      console.log("Recording started.")
-      setRecStatus(1)
-      setRecStatMsg("Stop Recording")
-      setFrame1(curFrame)
-      console.log(frame1)
-    }
-    if(recStatus % 3 == 1){
-      console.log("Recording ended.")
-      setRecStatus(2)
-      setRecStatMsg("Download Recorded Data")
-      setFrame2(curFrame)
-      console.log(frame2)
-    }
-    if(recStatus % 3 == 2){
-      console.log("Download recording.")
-      setRecStatus(0)
-      setRecStatMsg("Start Recording")
-      jsonFileDownloadRec()
+  const recStatus = useRef(0)
+  const setRecStatus = () => {
+    recStatus.current = recStatus.current + 1
+    if (recStatus.current > 1){
+      recStatus.current = 0
+      jsonFileDownload();
     }
   }
 
+  // const [recStatus, setRecStatus] = useState("0")
+  // const [recStatusMessage, setRecStatMsg] = useState("Start Recording")
+
+  const options = [
+    { value: 1, label: '1 Sensor Model' },
+    { value: 6, label: '6 Sensor Model' }
+  ]
+
+  const [selectedModel, setSelectedModel] = useState(1);
+  console.log(selectedModel)
+
+  const jsonFileDownload = () => {
+
+    console.log(angleData)
+    console.log(timeData)
+
+    //const tmpArray = (arr, n) => arr.map(x => x[n]);
+
+    let tmpArray = angleData
+    let json_data = JSON.stringify(tmpArray);
+    const fileName = "joint_data.json";
+    const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
+    const jsonURL = window.URL.createObjectURL(data);
+    const link = document.createElement("a");
+    document.body.appendChild(link);
+    link.href = jsonURL;
+    link.setAttribute("download", fileName);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
-      <Select 
-        defaultValue={sensModel}
+      <Select
+        defaultValue={options[0]}
+        onChange={setSelectedModel}
         options={options}
-        />
-      <Canvas>
-        <Model passChildData1={setChildData1} passChildData2={setChildData2} passCurrentFrame={setCurrentFrame}/>
-      </Canvas>
+      />
+      <Box
+        height={500}
+        width={1000}
+        my={4}
+        display="flex"
+        alignItems="center"
+        gap={4}
+        p={2}
+        sx={{ border: '2px solid grey' }}>
+        <Canvas>
+          <Model passAngleData={setAngleData} passTimeData={setTimeData} selectedModel={selectedModel} isPlaying={isPlaying} currentFrame={currentFrame}/>
+        </Canvas>
+        <video width="500" height="500" loop={true} autoPlay controls >
+          <source src={demo} type="video/mp4" />
+        </video>
+      </Box>
       <button type="button">Rotate Left</button>
       <button type="button">Reset Camera</button>
       <button type="button">Rotate Right</button>
-      <button type="button" onClick={updateRecStatus}>{recStatusMessage}</button>
+      {/* <button type="button" onClick={updateRecStatus}>{recStatusMessage}</button> */}
+      <button type="button" onClick={setRecStatus}>Start/Stop/Download Rec</button>
       <button type="button" onClick={jsonFileDownload}>Download Full Recording</button>
+      <button type="button" onClick={setPlay}>Pause/Play</button>
     </>
   )
 }
