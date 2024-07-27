@@ -1,4 +1,4 @@
-import { Box, useMediaQuery } from '@mui/material'
+import { Box, CircularProgress, useMediaQuery } from '@mui/material'
 import Row1 from './Row1';
 import Row2 from './Row2';
 import Row3 from './Row3';
@@ -7,6 +7,8 @@ import DashboardBox from '@/components/DashboardBox';
 import Row4 from './Row4';
 import Row5 from './Row5';
 import Row6 from './Row6';
+import { useGetEMGDataQuery, useGetIMUDataQuery } from '@/state/api';
+import { useEffect, useState } from 'react';
 
 const gridTemplateLargeScreens = `
     "z z z"
@@ -145,8 +147,34 @@ const gridTemplateSmallScreens = `
     "w"
 `;
 
+
 const Dashboard = () => {
-    const isAboveMediumScreens = useMediaQuery("(min-width: 1200px)")
+    const { data: emgData, isError: emgError, isLoading: emgLoading } = useGetEMGDataQuery();
+    const {data: imuData, isError: imuError, isLoading: imuLoading} = useGetIMUDataQuery()
+    console.log("imu data: ", imuData)
+    const [emgDataState, setEmgDataState] = useState(null);
+    const [imuDataState, setImuDataState] = useState(null);
+    const isAboveMediumScreens = useMediaQuery("(min-width: 1200px)");
+    useEffect(() => {
+        if (emgData && !emgError && !emgLoading) {
+            setEmgDataState(emgDataState)
+        }
+    }, [emgData, emgError, emgLoading, emgDataState]);
+
+    useEffect(() => {
+        if (imuData && !imuError && !imuLoading) {
+            setImuDataState(imuDataState)
+        }
+    }, [imuData, imuError, imuLoading, imuDataState])
+
+    if (emgLoading || imuLoading) {
+        return (<CircularProgress />)
+    }
+
+    if (emgError || imuError) {
+        return (<div>Error loading data. Message from index.tsx</div>)
+    }
+
   return (
     // Setting up the grid of the Dashboard. Check https://grid.malven.co/ and https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas for reference
     
@@ -164,17 +192,17 @@ const Dashboard = () => {
             gridTemplateAreas: gridTemplateSmallScreens,
         }}>
             <DashboardBox gridArea="z" width="200px">SENSOR 1 </DashboardBox>
-            <Row1></Row1>
+            <Row1 emg_data={emgData} imu_data={imuData}></Row1>
             <DashboardBox gridArea="g" width="200px">SENSOR 2</DashboardBox>
-            <Row2></Row2>
+            <Row2 emg_data={emgData} imu_data={imuData}></Row2>
             <DashboardBox gridArea="h" width="200px">SENSOR 3 </DashboardBox>
-            <Row3></Row3>
+            <Row3 emg_data={emgData} imu_data={imuData}></Row3>
             <DashboardBox gridArea="l" width="200px">SENSOR 4 </DashboardBox>
-            <Row4></Row4>
+            <Row4 emg_data={emgData} imu_data={imuData}></Row4>
             <DashboardBox gridArea="p" width="200px">SENSOR 5 </DashboardBox>
-            <Row5></Row5>
+            <Row5 emg_data={emgData} imu_data={imuData}></Row5>
             <DashboardBox gridArea="t" width="200px">SENSOR 6 </DashboardBox>
-            <Row6></Row6>
+            <Row6 emg_data={emgData} imu_data={imuData}></Row6>
         </Box>
   )
 }
