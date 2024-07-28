@@ -10,53 +10,36 @@ import { useGetEMGDataQuery, useGetIMUDataQuery } from '@/state/api';
 import { useEffect, useState } from 'react';
 
 const gridTemplateLargeScreens = `
-    "z z z"
-
     "a a b"
     "a a b"    
     "a a b"
     "a a c"
     "a a c"
     "a a c"
-
-    "g g g"
-
     "d d e"
     "d d e"    
     "d d e"
     "d d f"
     "d d f"
     "d d f"
-    
-    "h h h"
-
     "i i j"
     "i i j"
     "i i j"
     "i i k"
     "i i k"
     "i i k"
-    
-    "l l l"
-    
     "m m n"
     "m m n"
     "m m n"
     "m m o"
     "m m o"
     "m m o"
-    
-    "p p p"
-
     "q q r"
     "q q r"
     "q q r"
     "q q s"
     "q q s"
     "q q s"
-    
-    "t t t"
-
     "u u v"
     "u u v"
     "u u v"
@@ -182,24 +165,24 @@ const Dashboard = () => {
                 // modify the minmax for the size of the graphs
                 // fr -> fractional units (split each box evenly)
             gridTemplateColumns: "repeat(3, minmax(370px, 1fr))",
-            gridTemplateRows: "repeat(42, minmax(40px, 1fr))",
+            gridTemplateRows: "repeat(36, minmax(90px, 1fr))",
             gridTemplateAreas: gridTemplateLargeScreens,
         } : {
             gridAutoColumns: "1fr",
             gridAutoRows: "80px",
             gridTemplateAreas: gridTemplateSmallScreens,
         }}>
-            <DashboardBox gridArea="z" width="200px">SENSOR 1 </DashboardBox>
+            {/* <DashboardBox gridArea="z" width="200px">SENSOR 1 </DashboardBox> */}
             <Row1 emg_data={emgData} imu_data={imuData}></Row1>
-            <DashboardBox gridArea="g" width="200px">SENSOR 2</DashboardBox>
+            {/* <DashboardBox gridArea="g" width="200px">SENSOR 2</DashboardBox> */}
             <Row2 emg_data={emgData} imu_data={imuData}></Row2>
-            <DashboardBox gridArea="h" width="200px">SENSOR 3 </DashboardBox>
+            {/* <DashboardBox gridArea="h" width="200px">SENSOR 3 </DashboardBox> */}
             <Row3 emg_data={emgData} imu_data={imuData}></Row3>
-            <DashboardBox gridArea="l" width="200px">SENSOR 4 </DashboardBox>
+            {/* <DashboardBox gridArea="l" width="200px">SENSOR 4 </DashboardBox> */}
             <Row4 emg_data={emgData} imu_data={imuData}></Row4>
-            <DashboardBox gridArea="p" width="200px">SENSOR 5 </DashboardBox>
+            {/* <DashboardBox gridArea="p" width="200px">SENSOR 5 </DashboardBox> */}
             <Row5 emg_data={emgData} imu_data={imuData}></Row5>
-            <DashboardBox gridArea="t" width="200px">SENSOR 6 </DashboardBox>
+            {/* <DashboardBox gridArea="t" width="200px">SENSOR 6 </DashboardBox> */}
             <Row6 emg_data={emgData} imu_data={imuData}></Row6>
         </Box>
   )

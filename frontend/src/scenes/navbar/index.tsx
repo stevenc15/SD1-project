@@ -10,11 +10,11 @@ const Navbar = (props: Props) => {
     const { palette } = useTheme();
     const [selected, setSelected] = useState("dashboard")
     return (
-        <FlexBetween mb="0.25rem" p="0.5 rem 0rem" color={palette.grey[300]}>
+        <FlexBetween mb="1.2rem" p="2.5 rem 0rem" color={palette.grey[300]}>
             {/* LEFT SIDE */}
             <FlexBetween gap="0.75rem">
-                <DataThresholdingIcon sx={{ fontSize: "28px" }}/>
-                <Typography variant="h4" fontSize="16px">
+                <DataThresholdingIcon sx={{ fontSize: "58px" }}/>
+                <Typography variant="h4" fontSize="20px">
                     EMG IMU Dashboard
                 </Typography>
             </FlexBetween>
@@ -26,10 +26,11 @@ const Navbar = (props: Props) => {
                         onClick={() => setSelected("dashboard")}
                         style={ {
                             color: selected === "dashboard" ? "inherit" : palette.grey[700],
-                            textDecoration: "inherit"
+                            textDecoration: "inherit",
+                            fontSize: "18px"
                         }}
                         >
-                        dashboard
+                        Dashboard
                         </Link>
                 </Box>
                 <Box>
@@ -38,10 +39,11 @@ const Navbar = (props: Props) => {
                         onClick={() => setSelected("predictions")}
                         style={ {
                             color: selected === "predictions" ? "inherit" : palette.grey[700],
-                            textDecoration: "inherit"
+                            textDecoration: "inherit",
+                            fontSize: "18px"
                         }}
                         >
-                        predictions
+                        Predictions
                     </Link>
                 </Box>
             </FlexBetween>
