@@ -50,8 +50,8 @@ def load_imu_data():
 
 
 # Loading joint data
-load_joint_data()    
-load_imu_data()
+# load_joint_data()    
+# load_imu_data()
 
 @app.route('/get_joint_data', methods=['GET'])
 def get_joint_data():
@@ -185,6 +185,8 @@ def large_data():
     response = jsonify(arr)
     return response
 
+# df = pd.read_csv('emg_data.csv')
+# n = df['time'].size
 @app.route('/sensor1_emg', methods=['GET'])
 def sensor1_emg():
     n = 29975
@@ -194,8 +196,30 @@ def sensor1_emg():
         return jsonify({'error': 'Required columns'}), 400
     
     data = df[['time', 'IM EMG1']].head(n)
+    # print("data: ", data)
     data = df.values.tolist()
+    print("size of df: ", n)
+    # print(df.head())
     return jsonify(data)
+
+@app.route('/emg_data', methods=['GET'])
+def emg_data():
+    df = pd.read_csv('emg_data.csv')
+    if not set(['time', 'IM EMG1', 'IM EMG2', 'IM EMG3', 'IM EMG4', 'IM EMG5', 'IM EMG6']).issubset(df.columns):
+        return jsonify({'error': 'Column name not found'}), 400
+    data = df[['time', 'IM EMG1', 'IM EMG2', 'IM EMG3', 'IM EMG4', 'IM EMG5', 'IM EMG6']].to_dict(orient='list')
+    return jsonify(data)
+
+@app.route('/imu_data', methods=['GET'])
+def imu_data():
+    df = pd.read_csv('imu_data.csv')
+    if not set(['time', 'ACCX1', 'ACCY1', 'ACCZ1', 'GYROX1', 'GYROY1', 'GYROZ1', 'ACCX2', 'ACCY2', 'ACCZ2', 'GYROX2', 'GYROY2', 'GYROZ2', 'ACCX3', 'ACCY3', 'ACCZ3', 'GYROX3', 'GYROY3', 'GYROZ3', 'ACCX4', 'ACCY4', 'ACCZ4', 'GYROX4', 'GYROY4', 'GYROZ4', 'ACCX5', 'ACCY5', 'ACCZ5', 'GYROX5', 'GYROY5', 'GYROZ5', 'ACCX6', 'ACCY6', 'ACCZ6', 'GYROX6', 'GYROY6', 'GYROZ6']):
+        return jsonify({'Error': 'Column name not found from imu data'}), 400
+    
+    data = df[['time', 'ACCX1', 'ACCY1', 'ACCZ1', 'GYROX1', 'GYROY1', 'GYROZ1', 'ACCX2', 'ACCY2', 'ACCZ2', 'GYROX2', 'GYROY2', 'GYROZ2', 'ACCX3', 'ACCY3', 'ACCZ3', 'GYROX3', 'GYROY3', 'GYROZ3', 'ACCX4', 'ACCY4', 'ACCZ4', 'GYROX4', 'GYROY4', 'GYROZ4', 'ACCX5', 'ACCY5', 'ACCZ5', 'GYROX5', 'GYROY5', 'GYROZ5', 'ACCX6', 'ACCY6', 'ACCZ6', 'GYROX6', 'GYROY6', 'GYROZ6']].to_dict(orient='list')
+    return jsonify(data)
+
+
 
 @app.route('/joint_angle_pred', methods=['GET'])
 def joint_angle_pred():
@@ -208,9 +232,6 @@ def joint_angle_pred():
     data = df[['time', 'elbow_flex_r_pred']].head(n)
     data = df.values.tolist()
     return jsonify(data)
-
-
-          
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

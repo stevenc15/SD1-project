@@ -8,14 +8,14 @@ type Props = {
   imu_data: any
 }
 
-const Row2 = ({emg_data, imu_data}: Props) => {
+const Row4 = ({emg_data, imu_data}: Props) => {
   const emgChartRef = useRef<HTMLDivElement>(null)
   const imuAccChartRef = useRef<HTMLDivElement>(null)
   const imuGyroChartRef = useRef<HTMLDivElement>(null)
   const palette = useTheme()
   useEffect( () => {
     if (emg_data && emgChartRef.current) {
-      const data = emg_data['time'].map((time: any, index: number) => [time, emg_data['IM EMG2'][index]])
+      const data = emg_data['time'].map((time: any, index: number) => [time, emg_data['IM EMG4'][index]])
       const options: Highcharts.Options = {
         chart: {
             zooming: {
@@ -25,7 +25,7 @@ const Row2 = ({emg_data, imu_data}: Props) => {
         },
     
         title: {
-            text: 'Sensor 2 EMG',
+            text: 'Sensor 4 EMG',
             align: 'left',
             style: {
               color: "#ffff"
@@ -74,8 +74,8 @@ const Row2 = ({emg_data, imu_data}: Props) => {
               color: "#ffff"
             }
           },
-          min: -0.00033,
-          max: 0.00021
+          min: -0.0006,
+          max: 0.0006
         },
         legend: {
           itemStyle: {
@@ -105,7 +105,7 @@ const Row2 = ({emg_data, imu_data}: Props) => {
         },
     
         title: {
-            text: 'S2 ACC',
+            text: 'S4 ACC',
             align: 'left',
             style: {
               color: "#ffff"
@@ -151,8 +151,8 @@ const Row2 = ({emg_data, imu_data}: Props) => {
               color: "#ffff"
             }
           },
-          min: -30000,
-          max: 10000
+          min: -20000,
+          max: 5000
         },
         legend: {
           itemStyle: {
@@ -165,23 +165,23 @@ const Row2 = ({emg_data, imu_data}: Props) => {
         series: [
           {
             type: 'spline',
-            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['ACCX2'][index]]),
+            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['ACCX4'][index]]),
             lineWidth: 1,
-            name: 'ACCX2',
+            name: 'ACCX4',
             color: palette.palette.secondary[600]
           },
           {
             type: 'spline',
-            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['ACCY2'][index]]),
+            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['ACCY4'][index]]),
             lineWidth: 1,
-            name: 'ACCY2',
+            name: 'ACCY4',
             color: palette.palette.grey[100]
           },
           {
             type: 'spline',
-            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['ACCZ2'][index]]),
+            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['ACCZ4'][index]]),
             lineWidth: 1,
-            name: 'ACCZ2',
+            name: 'ACCZ4',
             color: palette.palette.sky[500]
           }
         ]
@@ -198,7 +198,7 @@ const Row2 = ({emg_data, imu_data}: Props) => {
         },
     
         title: {
-            text: 'S2 GYRO',
+            text: 'S4 GYRO',
             align: 'left',
             style: {
               color: "#ffff"
@@ -244,8 +244,6 @@ const Row2 = ({emg_data, imu_data}: Props) => {
               color: "#ffff"
             }
           },
-          min: -500,
-          max: 500
         },
         legend: {
           itemStyle: {
@@ -258,23 +256,23 @@ const Row2 = ({emg_data, imu_data}: Props) => {
         series: [
           {
             type: 'spline',
-            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['GYROX2'][index]]),
+            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['GYROX4'][index]]),
             lineWidth: 1,
-            name: 'GYROX2',
+            name: 'GYROX4',
             color: palette.palette.secondary[600]
           },
           {
             type: 'spline',
-            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['GYROY2'][index]]),
+            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['GYROY4'][index]]),
             lineWidth: 1,
-            name: 'GYROY2',
+            name: 'GYROY4',
             color: palette.palette.grey[100]
           },
           {
             type: 'spline',
-            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['GYROZ2'][index]]),
+            data: imu_data['time'].map((time: any, index: number) => [time, imu_data['GYROZ4'][index]]),
             lineWidth: 1,
-            name: 'GYROZ2',
+            name: 'GYROZ4',
             color: palette.palette.sky[500]
           }
         ]
@@ -284,11 +282,11 @@ const Row2 = ({emg_data, imu_data}: Props) => {
   }, [emg_data, palette, imu_data])
   return (
     <>
-      <DashboardBox gridArea="d" ref={emgChartRef}></DashboardBox>
-      <DashboardBox gridArea="e" ref={imuAccChartRef}></DashboardBox>
-      <DashboardBox gridArea="f" ref={imuGyroChartRef}></DashboardBox>
+      <DashboardBox gridArea="m" ref={emgChartRef}></DashboardBox>
+      <DashboardBox gridArea="n" ref={imuAccChartRef}></DashboardBox>
+      <DashboardBox gridArea="o" ref={imuGyroChartRef}></DashboardBox>
     </>
   )
 }
 
-export default Row2
+export default Row4
