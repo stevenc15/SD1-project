@@ -131,7 +131,7 @@ const gridTemplateSmallScreens = `
 const Dashboard = () => {
     const { data: emgData, isError: emgError, isLoading: emgLoading } = useGetEMGDataQuery();
     const {data: imuData, isError: imuError, isLoading: imuLoading} = useGetIMUDataQuery()
-    console.log("imu data: ", imuData)
+    // console.log("imu data: ", imuData)
     const [emgDataState, setEmgDataState] = useState(null);
     const [imuDataState, setImuDataState] = useState(null);
     const isAboveMediumScreens = useMediaQuery("(min-width: 1200px)");

@@ -1,5 +1,5 @@
 import DashboardBox from '@/components/DashboardBox'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Highcharts from 'highcharts';
 import { useTheme } from '@mui/material'
 
@@ -42,9 +42,10 @@ const Row1 = ({emg_data, imu_data}: Props) => {
             }
         },
     
-        // tooltip: {
-        //     valueDecimals: 2
-        // },
+        tooltip: {
+            // valueDecimals: 2
+            enabled: false
+        },
     
         xAxis: {
           title: {

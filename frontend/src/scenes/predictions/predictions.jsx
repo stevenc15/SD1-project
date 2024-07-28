@@ -1,56 +1,73 @@
-import { Canvas } from '@react-three/fiber'
-import { useState, useRef } from 'react'
-import Select from 'react-select'
-import Model from '/public/Model'
-import { Box } from '@mui/material'
-import demo from '/public/IMG_2850.mov'
+import { Canvas } from "@react-three/fiber";
+import { useState, useRef } from "react";
+import Select from "react-select";
+import Model from "/public/Model";
+import { Box } from "@mui/material";
+import demo from "/public/IMG_2850.mov";
 
 function Predictions() {
-
   const [angleData, setAngleData] = useState([]);
   const [timeData, setTimeData] = useState([]);
 
-  const isPlaying = useRef(true)
+  const isPlaying = useRef(true);
   const setPlay = () => {
-    isPlaying.current = ! isPlaying.current
-    console.log (isPlaying.current)
-  }
-  
-  const currentFrame = useRef(0)
-  const setFrame = () => {
-    console.log(currentFrame.current)
-  }
+    isPlaying.current = !isPlaying.current;
+    console.log(isPlaying.current);
+  };
 
-  setFrame();
+  const currentFrame = useRef(0);
+  const recStatus = useRef(0);
+  const frame1 = useRef(0);
+  const frame2 = useRef(0);
 
-  const recStatus = useRef(0)
   const setRecStatus = () => {
-    recStatus.current = recStatus.current + 1
-    if (recStatus.current > 1){
-      recStatus.current = 0
+    console.log(recStatus.current)
+    if (recStatus.current == 0) {
+      frame1.current = currentFrame.current;
+      recStatus.current = recStatus.current + 1;
+    }
+    if (recStatus.current == 1) {
+      frame2.current = currentFrame.current;
+      recStatus.current = 0;
+      console.log(frame1.current + " " + frame2.current);
       jsonFileDownload();
     }
-  }
+  };
 
   // const [recStatus, setRecStatus] = useState("0")
   // const [recStatusMessage, setRecStatMsg] = useState("Start Recording")
 
   const options = [
-    { value: 1, label: '1 Sensor Model' },
-    { value: 6, label: '6 Sensor Model' }
-  ]
+    { value: 1, label: "1 Sensor Model" },
+    { value: 6, label: "6 Sensor Model" },
+  ];
 
   const [selectedModel, setSelectedModel] = useState(1);
-  console.log(selectedModel)
+  console.log(selectedModel);
+
+  const rotDir = useRef(0);
+  const setRotLeft = () => {
+    if (rotDir.current == -1) {
+      rotDir.current = 0;
+    } else {
+      rotDir.current = -1;
+    }
+  };
+  const setRotRight = () => {
+    if (rotDir.current == 1) {
+      rotDir.current = 0;
+    } else {
+      rotDir.current = 1;
+    }
+  };
 
   const jsonFileDownload = () => {
-
-    console.log(angleData)
-    console.log(timeData)
+    console.log(angleData);
+    console.log(timeData);
 
     //const tmpArray = (arr, n) => arr.map(x => x[n]);
 
-    let tmpArray = angleData
+    let tmpArray = angleData;
     let json_data = JSON.stringify(tmpArray);
     const fileName = "joint_data.json";
     const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
@@ -78,23 +95,41 @@ function Predictions() {
         alignItems="center"
         gap={4}
         p={2}
-        sx={{ border: '2px solid grey' }}>
+        sx={{ border: "2px solid grey" }}
+      >
         <Canvas>
-          <Model passAngleData={setAngleData} passTimeData={setTimeData} selectedModel={selectedModel} isPlaying={isPlaying} currentFrame={currentFrame}/>
+          <Model
+            passAngleData={setAngleData}
+            passTimeData={setTimeData}
+            selectedModel={selectedModel}
+            isPlaying={isPlaying}
+            currentFrame={currentFrame}
+            rotDir={rotDir}
+          />
         </Canvas>
-        <video width="500" height="500" loop={true} autoPlay controls >
+        <video width="500" height="500" loop={true} autoPlay controls>
           <source src={demo} type="video/mp4" />
         </video>
       </Box>
-      <button type="button">Rotate Left</button>
+      <button type="button" onClick={setRotLeft}>
+        Rotate Left
+      </button>
       <button type="button">Reset Camera</button>
-      <button type="button">Rotate Right</button>
+      <button type="button" onClick={setRotRight}>
+        Rotate Right
+      </button>
       {/* <button type="button" onClick={updateRecStatus}>{recStatusMessage}</button> */}
-      <button type="button" onClick={setRecStatus}>Start/Stop/Download Rec</button>
-      <button type="button" onClick={jsonFileDownload}>Download Full Recording</button>
-      <button type="button" onClick={setPlay}>Pause/Play</button>
+      <button type="button" onClick={setRecStatus}>
+        Start/Stop/Download Rec
+      </button>
+      <button type="button" onClick={jsonFileDownload}>
+        Download Full Recording
+      </button>
+      <button type="button" onClick={setPlay}>
+        Pause/Play
+      </button>
     </>
-  )
+  );
 }
 
-export default Predictions
+export default Predictions;

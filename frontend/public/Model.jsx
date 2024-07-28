@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { Suspense } from "react";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { GUI } from "lil-gui";
+import { Controller, GUI } from "lil-gui";
 
 export default function Model(props) {
   const group = useRef();
@@ -76,8 +76,8 @@ export default function Model(props) {
     yRot: 180,
     zRot: 90,
     Framerate: 60,
+    rotSpeed: 1,
     Interpolate: false,
-    isPlaying: true,
   };
 
   let clock = new THREE.Clock();
@@ -96,17 +96,14 @@ export default function Model(props) {
     gui.add(statObject, "yRot", 0, 360, 1);
     gui.add(statObject, "zRot", 0, 360, 1);
     gui.add(statObject, "Framerate", 24, 120, 1);
+    gui.add(statObject, "rotSpeed", 1, 5, 1);
     gui.add(statObject, "Interpolate");
-    gui.add(statObject, "isPlaying");
-    gui.onChange((event) => {
-      console.log(event);
+    gui.onChange(() => {
       group.current.rotation.x = statObject.xRot * (Math.PI / 180);
       group.current.rotation.y = statObject.yRot * (Math.PI / 180);
       group.current.rotation.z = statObject.zRot * (Math.PI / 180);
       interval = 1 / statObject.Framerate;
-      console.log(statObject.isPlaying);
-      console.log(typeof statObject.isPlaying);
-      modelPlaying.current = statObject.isPlaying;
+      console.log(statObject.rotSpeed)
     });
     return () => {
       gui.destroy();
@@ -120,28 +117,19 @@ export default function Model(props) {
     if (delta > interval) {
       if (props.isPlaying.current) {
         props.currentFrame.current = props.currentFrame.current + 1;
-        if ((props.currentFrame.current == apiData.dataLength - 1)) {
+        if (props.currentFrame.current == apiData.dataLength - 1) {
           props.currentFrame.current = 0;
         }
       }
       forearm.current.skeleton.bones[2].rotation.x =
         apiData.angleData[props.currentFrame.current] * (Math.PI / 180);
+      statObject.zRot =
+        statObject.zRot + (props.rotDir.current * statObject.rotSpeed);
+        console.log(statObject.rotSpeed)
+      group.current.rotation.z = statObject.zRot * (Math.PI / 180);
     }
     delta = delta % interval;
   });
-
-  // function rotLeft()
-  // {
-  //   group.rotate =- 90
-  // }
-  // function rotRight()
-  // {
-  //   group.rotate =+ 90
-  // }
-  // function resetCam()
-  // {
-  //   group.rotate = 0
-  // }
 
   useEffect(() => {
     props.passAngleData(apiData.angleData);
