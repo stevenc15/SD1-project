@@ -86,10 +86,12 @@ export const tokens = {
         main: tokens.grey[500],
       },
       emerald: {
-        ...tokens.emerald
+        ...tokens.emerald,
+        main: tokens.emerald[500]
       },
       sky: {
-        ...tokens.sky
+        ...tokens.sky,
+        main: tokens.sky[500]
       },
       background: {
         default: tokens.background.main,

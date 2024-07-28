@@ -2,7 +2,6 @@ import { Box, CircularProgress, useMediaQuery } from '@mui/material'
 import Row1 from './Row1';
 import Row2 from './Row2';
 import Row3 from './Row3';
-import FlexBetween from '@/components/FlexBetween';
 import DashboardBox from '@/components/DashboardBox';
 import Row4 from './Row4';
 import Row5 from './Row5';
@@ -146,7 +145,6 @@ const gridTemplateSmallScreens = `
     "w"
     "w"
 `;
-
 
 const Dashboard = () => {
     const { data: emgData, isError: emgError, isLoading: emgLoading } = useGetEMGDataQuery();
