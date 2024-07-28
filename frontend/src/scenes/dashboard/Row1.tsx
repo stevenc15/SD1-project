@@ -1,8 +1,5 @@
 import DashboardBox from '@/components/DashboardBox'
-import LiveChart from '@/components/LiveChart'
-import StaticGraph from '@/components/StaticGraph'
 import React, { useEffect, useRef } from 'react'
-import SampleData from '@/components/SampleData'
 import Highcharts from 'highcharts';
 import { useTheme } from '@mui/material'
 
@@ -70,7 +67,7 @@ const Row1 = ({emg_data, imu_data}: Props) => {
 
         yAxis: {
           title: {
-            text: "mV",
+            text: "Volts",
             style: {
               color: "#ffff"
             }
@@ -148,7 +145,7 @@ const Row1 = ({emg_data, imu_data}: Props) => {
 
         yAxis: {
           title: {
-            text: "mV",
+            text: "mm/s^2",
             style: {
               color: "#ffff"
             }
@@ -195,7 +192,7 @@ const Row1 = ({emg_data, imu_data}: Props) => {
     };
     Highcharts.chart(imuAccChartRef.current, options)
     }
-    if (imu_data && imuGyroChartRef) {
+    if (imu_data && imuGyroChartRef.current) {
       const options: Highcharts.Options = {
         chart: {
             zooming: {
@@ -241,7 +238,7 @@ const Row1 = ({emg_data, imu_data}: Props) => {
 
         yAxis: {
           title: {
-            text: "mV",
+            text: "Degrees",
             style: {
               color: "#ffff"
             }
