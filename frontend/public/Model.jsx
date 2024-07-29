@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { Suspense } from "react";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { Controller, GUI } from "lil-gui";
+import { GUI } from "lil-gui";
 
 export default function Model(props) {
   const group = useRef();
