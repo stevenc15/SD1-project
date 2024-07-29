@@ -5,8 +5,10 @@ import Row3 from './Row3';
 import Row4 from './Row4';
 import Row5 from './Row5';
 import Row6 from './Row6';
-import { useGetEMGDataQuery, useGetIMUDataQuery } from '@/state/api';
-import { useEffect, useState } from 'react';
+// import { useGetEMGDataQuery, useGetIMUDataQuery } from '@/state/api';
+// import { useEffect, useState } from 'react';
+import { useData } from '@/context/DataContext';
+import LiveRow from './LiveRow';
 
 const gridTemplateLargeScreens = `
     "a a b"
@@ -129,23 +131,11 @@ const gridTemplateSmallScreens = `
 `;
 
 const Dashboard = () => {
-    const { data: emgData, isError: emgError, isLoading: emgLoading } = useGetEMGDataQuery();
-    const {data: imuData, isError: imuError, isLoading: imuLoading} = useGetIMUDataQuery()
-    // console.log("imu data: ", imuData)
-    const [emgDataState, setEmgDataState] = useState(null);
-    const [imuDataState, setImuDataState] = useState(null);
+    
+    const { emgData, imuData, emgLoading, imuLoading, emgError, imuError } = useData();
+    console.log("emg data in the dashboard:", emgData)
+    console.log("imu data in the dashboard:", imuData)
     const isAboveMediumScreens = useMediaQuery("(min-width: 1200px)");
-    useEffect(() => {
-        if (emgData && !emgError && !emgLoading) {
-            setEmgDataState(emgDataState)
-        }
-    }, [emgData, emgError, emgLoading, emgDataState]);
-
-    useEffect(() => {
-        if (imuData && !imuError && !imuLoading) {
-            setImuDataState(imuDataState)
-        }
-    }, [imuData, imuError, imuLoading, imuDataState])
 
     if (emgLoading || imuLoading) {
         return (<CircularProgress />)
@@ -171,18 +161,13 @@ const Dashboard = () => {
             gridAutoRows: "80px",
             gridTemplateAreas: gridTemplateSmallScreens,
         }}>
-            {/* <DashboardBox gridArea="z" width="200px">SENSOR 1 </DashboardBox> */}
             <Row1 emg_data={emgData} imu_data={imuData}></Row1>
-            {/* <DashboardBox gridArea="g" width="200px">SENSOR 2</DashboardBox> */}
-            <Row2 emg_data={emgData} imu_data={imuData}></Row2>
-            {/* <DashboardBox gridArea="h" width="200px">SENSOR 3 </DashboardBox> */}
+            <LiveRow></LiveRow>
+            {/* <Row2 emg_data={emgData} imu_data={imuData}></Row2>
             <Row3 emg_data={emgData} imu_data={imuData}></Row3>
-            {/* <DashboardBox gridArea="l" width="200px">SENSOR 4 </DashboardBox> */}
             <Row4 emg_data={emgData} imu_data={imuData}></Row4>
-            {/* <DashboardBox gridArea="p" width="200px">SENSOR 5 </DashboardBox> */}
             <Row5 emg_data={emgData} imu_data={imuData}></Row5>
-            {/* <DashboardBox gridArea="t" width="200px">SENSOR 6 </DashboardBox> */}
-            <Row6 emg_data={emgData} imu_data={imuData}></Row6>
+            <Row6 emg_data={emgData} imu_data={imuData}></Row6> */}
         </Box>
   )
 }

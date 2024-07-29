@@ -28,6 +28,9 @@ sample_rate_imu = None
 current_joint_index = 0
 current_imu_index = 0
 
+df = pd.read_csv('joint_angle_pred.csv')
+
+
 def load_joint_data():
 
     global data_joint, sample_rate_joint 
@@ -226,12 +229,34 @@ def joint_angle_pred():
     df = pd.read_csv('joint_angle_pred.csv')
     n = df.size
 
-    if 'time' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
+    if 'time_pred' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
         return jsonify({'error': 'Required columns'}), 400
     
-    data = df[['time', 'elbow_flex_r_pred']].head(n)
+    data = df[['time_pred', 'elbow_flex_r_pred']].head(n)
     data = df.values.tolist()
     return jsonify(data)
+
+pred_data_idx = 0
+@app.route('/pred_data', methods=['GET'])
+def pred_data():
+    df = pd.read_csv('joint_angle_pred.csv')
+    global pred_data_idx
+    n = len(df)
+    if pred_data_idx >= n:
+        pred_data_idx = 0
+        return jsonify({'Backend error': 'No more data available'}), 400
+
+    # if 'time_pred' not in df.columns or 'elbow_flex_r_pred' not in df.columns or 'elbow_flex_r' in df.columns:
+    #     return jsonify({'Backend error': 'Column name not found in csv file'}), 400
+    
+    row = df.iloc[pred_data_idx]
+    result = {
+        'time': row['time_pred'],
+        'elbow_flex_r': row['elbow_flex_r'],
+        'elbow_flex_r_pred': row['elbow_flex_r_pred']
+    }
+    pred_data_idx += 1
+    return jsonify(result), 200
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
