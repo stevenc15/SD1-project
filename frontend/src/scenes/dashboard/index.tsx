@@ -7,8 +7,8 @@ import Row5 from './Row5';
 import Row6 from './Row6';
 // import { useGetEMGDataQuery, useGetIMUDataQuery } from '@/state/api';
 // import { useEffect, useState } from 'react';
-import { useData } from '@/context/DataContext';
-import LiveRow from './LiveRow';
+// import { useData } from '@/context/DataContext';
+import { useGetEMGDataQuery, useGetIMUDataQuery } from '@/state/api';
 
 const gridTemplateLargeScreens = `
     "a a b"
@@ -132,9 +132,9 @@ const gridTemplateSmallScreens = `
 
 const Dashboard = () => {
     
-    const { emgData, imuData, emgLoading, imuLoading, emgError, imuError } = useData();
-    console.log("emg data in the dashboard:", emgData)
-    console.log("imu data in the dashboard:", imuData)
+    // const { emgData, imuData, emgLoading, imuLoading, emgError, imuError } = useData();
+    const { data: emgData, isError: emgError, isLoading: emgLoading } = useGetEMGDataQuery();
+    const {data: imuData, isError: imuError, isLoading: imuLoading} = useGetIMUDataQuery()
     const isAboveMediumScreens = useMediaQuery("(min-width: 1200px)");
 
     if (emgLoading || imuLoading) {
@@ -162,12 +162,11 @@ const Dashboard = () => {
             gridTemplateAreas: gridTemplateSmallScreens,
         }}>
             <Row1 emg_data={emgData} imu_data={imuData}></Row1>
-            <LiveRow></LiveRow>
-            {/* <Row2 emg_data={emgData} imu_data={imuData}></Row2>
+            <Row2 emg_data={emgData} imu_data={imuData}></Row2>
             <Row3 emg_data={emgData} imu_data={imuData}></Row3>
             <Row4 emg_data={emgData} imu_data={imuData}></Row4>
             <Row5 emg_data={emgData} imu_data={imuData}></Row5>
-            <Row6 emg_data={emgData} imu_data={imuData}></Row6> */}
+            <Row6 emg_data={emgData} imu_data={imuData}></Row6>
         </Box>
   )
 }

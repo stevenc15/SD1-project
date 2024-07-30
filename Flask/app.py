@@ -229,10 +229,10 @@ def joint_angle_pred():
     df = pd.read_csv('joint_angle_pred.csv')
     n = df.size
 
-    if 'time_pred' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
+    if 'time' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
         return jsonify({'error': 'Required columns'}), 400
     
-    data = df[['time_pred', 'elbow_flex_r_pred']].head(n)
+    data = df[['time', 'elbow_flex_r_pred']].head(n)
     data = df.values.tolist()
     return jsonify(data)
 
@@ -251,7 +251,7 @@ def pred_data():
     
     row = df.iloc[pred_data_idx]
     result = {
-        'time': row['time_pred'],
+        'time': row['time'],
         'elbow_flex_r': row['elbow_flex_r'],
         'elbow_flex_r_pred': row['elbow_flex_r_pred']
     }

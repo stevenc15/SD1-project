@@ -14,7 +14,6 @@ const LiveRow = () => {
     const result = await fetch('http://127.0.0.1:5000/pred_data');
     if (result.ok) {
       const data = await result.json();
-      // console.log('Fetched data:', data);
 
       const {time, elbow_flex_r_pred, elbow_flex_r} = data;
       // console.log("This is the date: " + date)
@@ -62,8 +61,8 @@ const LiveRow = () => {
           allowMutatingData: false,
         },
         title: {
-          text: 'Predictions data',
-          align: 'left',
+          text: 'Ground Truth vs Predicted Value',
+          align: 'center',
           style: {
             color: "#ffff"
           }
@@ -104,7 +103,7 @@ const LiveRow = () => {
           minPadding: 0.2,
           maxPadding: 0.2,
           title: {
-            text: 'Value',
+            text: 'Degrees',
             margin: 80,
             style: {
               color: "#ffff"
@@ -152,9 +151,7 @@ const LiveRow = () => {
 
   return (
     <>
-      <DashboardBox gridArea="d" ref={containerRef}></DashboardBox>
-      <DashboardBox gridArea="e" ></DashboardBox>
-      <DashboardBox gridArea="f" ></DashboardBox>
+      <DashboardBox ref={containerRef} height={600} width={670}></DashboardBox>
     </>
   )
 }

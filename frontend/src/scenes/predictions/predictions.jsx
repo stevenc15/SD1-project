@@ -1,13 +1,41 @@
 import { Canvas } from "@react-three/fiber";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Select from "react-select";
 import Model from "/public/Model";
-import { Box } from "@mui/material";
+import DashboardBox from "@/components/DashboardBox";
+import { useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Alert,
+  AlertTitle,
+  IconButton,
+  Collapse,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import demo from "/public/IMG_2850.mov";
+import FlexBetween from "@/components/FlexBetween";
+import LiveRow from "../dashboard/LiveRow";
+
+
+// import Alert from "@mui/material/Alert";
+// import AlertTitle from "@mui/material/AlertTitle";
 
 function Predictions() {
+  const palette = useTheme();
+
+  const gridTemplateLargeScreens = `
+    "a b . "
+`;
+
+const gridTemplateButtons = `
+    "d"
+`;
+
   const [angleData, setAngleData] = useState([]);
   const [timeData, setTimeData] = useState([]);
+  const [elapsedTime, setElapsedTime] = useState()
+  const [open, setOpen] = useState(true);
 
   const isPlaying = useRef(true);
   const setPlay = () => {
@@ -21,7 +49,7 @@ function Predictions() {
   const frame2 = useRef(0);
 
   const setRecStatus = () => {
-    console.log(recStatus.current)
+    console.log(recStatus.current);
     if (recStatus.current == 0) {
       frame1.current = currentFrame.current;
       recStatus.current = recStatus.current + 1;
@@ -30,12 +58,9 @@ function Predictions() {
       frame2.current = currentFrame.current;
       recStatus.current = 0;
       console.log(frame1.current + " " + frame2.current);
-      jsonFileDownload();
+      jsonFileDownloadRec();
     }
   };
-
-  // const [recStatus, setRecStatus] = useState("0")
-  // const [recStatusMessage, setRecStatMsg] = useState("Start Recording")
 
   const options = [
     { value: 1, label: "1 Sensor Model" },
@@ -61,12 +86,12 @@ function Predictions() {
     }
   };
 
+  const resetState = () => {
+    currentFrame.current = 0
+    console.log("Reset.")
+  }
+
   const jsonFileDownload = () => {
-    console.log(angleData);
-    console.log(timeData);
-
-    //const tmpArray = (arr, n) => arr.map(x => x[n]);
-
     let tmpArray = angleData;
     let json_data = JSON.stringify(tmpArray);
     const fileName = "joint_data.json";
@@ -80,54 +105,125 @@ function Predictions() {
     document.body.removeChild(link);
   };
 
+  const jsonFileDownloadRec = () => {
+    if(frame1 > frame2)
+    {
+      let tmpFrame = frame1.current
+      frame1.current = frame2.current
+      frame2.current = tmpFrame
+    }
+    else if (frame1 == frame2)
+    {
+      jsonFileDownload();
+    }
+    let tmpArray = angleData.slice(frame1, frame2)
+    let json_data = JSON.stringify(tmpArray);
+    const fileName = "joint_data.json";
+    const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
+    const jsonURL = window.URL.createObjectURL(data);
+    const link = document.createElement("a");
+    document.body.appendChild(link);
+    link.href = jsonURL;
+    link.setAttribute("download", fileName);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    setOpen(true)
+    setTimeout(() => {
+      setOpen(false);
+    }, 3000);
+  }, [selectedModel]);
+
   return (
     <>
-      <Select
-        defaultValue={options[0]}
-        onChange={setSelectedModel}
-        options={options}
-      />
-      <Box
-        height={500}
-        width={1000}
-        my={4}
-        display="flex"
-        alignItems="center"
-        gap={4}
-        p={2}
-        sx={{ border: "2px solid grey" }}
-      >
-        <Canvas>
-          <Model
-            passAngleData={setAngleData}
-            passTimeData={setTimeData}
-            selectedModel={selectedModel}
-            isPlaying={isPlaying}
-            currentFrame={currentFrame}
-            rotDir={rotDir}
-          />
-        </Canvas>
-        <video width="500" height="500" loop={true} autoPlay controls>
-          <source src={demo} type="video/mp4" />
-        </video>
-      </Box>
-      <button type="button" onClick={setRotLeft}>
-        Rotate Left
-      </button>
-      <button type="button">Reset Camera</button>
-      <button type="button" onClick={setRotRight}>
-        Rotate Right
-      </button>
-      {/* <button type="button" onClick={updateRecStatus}>{recStatusMessage}</button> */}
-      <button type="button" onClick={setRecStatus}>
-        Start/Stop/Download Rec
-      </button>
-      <button type="button" onClick={jsonFileDownload}>
-        Download Full Recording
-      </button>
-      <button type="button" onClick={setPlay}>
-        Pause/Play
-      </button>
+      <Collapse in={open}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          {elapsedTime} seconds of input data loaded to model.
+        </Alert>
+      </Collapse>
+        <Select 
+              defaultValue={options[0]}
+              onChange={setSelectedModel}
+              options={options}
+            />
+        <Box
+          width="100%"
+          height="100%"
+          display="grid"
+          gap="6.0rem"
+          sx={{
+            gridTemplateColumns: "repeat(2, minmax(10px, 2fr))",
+            gridTemplateRows: "repeat(1, minmax(100px, 2fr))",
+            gridTemplateAreas: gridTemplateLargeScreens,
+          }}
+        >
+          <DashboardBox height={600} width={670}my={4} sx={{backgroundColor: palette.palette.grey[900]}}>
+          <Canvas id="modelCanvas">
+              <Model
+                passAngleData={setAngleData}
+                passTimeData={setTimeData}
+                passElapsed={setElapsedTime}
+                selectedModel={selectedModel}
+                isPlaying={isPlaying}
+                currentFrame={currentFrame}
+                rotDir={rotDir}
+              />
+            </Canvas>
+          </DashboardBox>
+          {/* <DashboardBox height={400} width={470} my={4}> 
+            <video width="500" height="400" loop={true} autoPlay controls>
+              <source src={demo} type="video/mp4" />
+            </video>
+          </DashboardBox> */}
+          <DashboardBox height={600} width={670} my={4} gridArea={'b'}>
+            <LiveRow></LiveRow>
+          </DashboardBox>
+        </Box>
+        <Box display="grid"
+          gap="2rem" sx={{
+            gridTemplateColumns: "repeat(6, minmax(5px, 1fr))",
+            gridTemplateRows: "repeat(1, minmax(1px, 1fr))",
+            gridTemplateAreas: gridTemplateButtons,
+          }}>
+          <Button variant="contained" type="button" onClick={setRotLeft}>
+            Rotate Left
+          </Button>
+          <Button variant="contained" type="button" onClick={setPlay}>
+            Pause/Play
+          </Button>
+          <Button variant="contained" type="button" onClick={setRotRight}>
+            Rotate Right
+          </Button>
+          <Button variant="contained" type="button" onClick={resetState}>
+            Reset Camera
+          </Button>
+          <Button variant="contained" type="button" onClick={setRecStatus}>
+            Start/Stop/Download Rec
+          </Button>
+          <Button
+            variant="contained"
+            type="button"
+            onClick={jsonFileDownload}
+          >
+            Download Full Recording
+          </Button>
+        </Box>
     </>
   );
 }
