@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
 import DashboardBox from "@/components/DashboardBox";
 import demo from "/public/IMG_2850.mov";
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 
 function Collection() {
   const gridTemplateLargeScreens = `
@@ -27,50 +27,100 @@ function Collection() {
         }}
       >
         <DashboardBox gridArea="a" justifyContent={"space-evenly"}>
-            <Card>
+        <Card sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ flex: "1 0 auto" }}>
                 <Box>
-                    <CardContent>
-                    <Box>
-                <p>Arm Swing Trials</p>
-                <p>4 Speeds: Slow, Normal, Fast, Very Fast</p>
-                <p>30 seconds per trial.</p>
-                <p>Full natural range of flexion-extension and abduction-adduction</p>
-            </Box>
-                    </CardContent>
+                  <p>Arm Swing Trials</p>
+                  <p>4 Speeds: Slow, Normal, Fast, Very Fast</p>
+                  <p>30 seconds per trial.</p>
+                  <p>
+                    Full natural range of flexion-extension and
+                    abduction-adduction
+                  </p>
+                  <p>
+                    Free, natural swing in saggital and frontal planes.
+                  </p>
                 </Box>
-                <Box>
-                    <CardMedia
-                        component="video"
-                        src={demo}
-                        width="300"
-                        height="400"
-                        autoPlay
-                        loop
-                    />
-                </Box>
-            </Card>
-            {/* <Box>
-                <p>Arm Swing Trials</p>
-                <p>4 Speeds: Slow, Normal, Fast, Very Fast</p>
-                <p>30 seconds per trial.</p>
-                <p>Full natural range of flexion-extension and abduction-adduction</p>
+              </CardContent>
+              <Box
+                sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
+              ></Box>
             </Box>
-            <video width="300" height="400" loop={true} controls>
-                <source src={demo} type="video/mp4" />
-            </video> */}
+            <Box>
+              <CardMedia
+                component="video"
+                src={demo}
+                width="300"
+                height="400"
+                autoPlay
+                loop
+              />
+            </Box>
+          </Card>
         </DashboardBox>
         <DashboardBox gridArea="b">
-            area 2
+        <Card sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ flex: "1 0 auto" }}>
+                <Box>
+                  <p>Arm Swing Trials</p>
+                  <p>4 Speeds: Slow, Normal, Fast, Very Fast</p>
+                  <p>30 seconds per trial.</p>
+                  <p>
+                    Full natural range of flexion-extension and
+                    abduction-adduction
+                  </p>
+                </Box>
+              </CardContent>
+              <Box
+                sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
+              ></Box>
+            </Box>
+            <Box>
+              <CardMedia
+                component="video"
+                src={demo}
+                width="300"
+                height="400"
+                autoPlay
+                loop
+              />
+            </Box>
+          </Card>
         </DashboardBox>
         <DashboardBox gridArea="c">
-            area 3
+          <Card sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <CardContent sx={{ flex: "1 0 auto" }}>
+                <Box>
+                  <p>Arm Swing Trials</p>
+                  <p>4 Speeds: Slow, Normal, Fast, Very Fast</p>
+                  <p>30 seconds per trial.</p>
+                  <p>
+                    Full natural range of flexion-extension and
+                    abduction-adduction
+                  </p>
+                </Box>
+              </CardContent>
+              <Box
+                sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
+              ></Box>
+            </Box>
+            <Box>
+              <CardMedia
+                component="video"
+                src={demo}
+                width="300"
+                height="400"
+                autoPlay
+                loop
+              />
+            </Box>
+          </Card>
         </DashboardBox>
-        <DashboardBox gridArea="d">
-            area 4
-        </DashboardBox>
-        <DashboardBox gridArea="e">
-            area 5
-        </DashboardBox>
+        <DashboardBox gridArea="d">area 4</DashboardBox>
+        <DashboardBox gridArea="e">area 5</DashboardBox>
       </Box>
     </>
   );

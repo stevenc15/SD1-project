@@ -1,24 +1,24 @@
-import { Box, Avatar, IconButton, Divider, Typography } from "@mui/material";
+import { Box, Avatar, IconButton, Divider, Typography, useTheme } from "@mui/material";
 import DashboardBox from "@/components/DashboardBox";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 function About() {
+  const { palette } = useTheme();
   const gridTemplateLargeScreens = `
     "a b"
     "c d"
 `;
   return (
-    <Box>
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
+          justifyContent: "center",
           flexWrap: "wrap",
           gap: 1.5,
-          "& > div": { minWidth: "clamp(0px, (150px - 100%) * 999 ,100%)" },
-          gridTemplateColumns: "repeat(2, minmax(370px, 1fr))",
-          gridTemplateRows: "repeat(2, minmax(90px, 1fr))",
+          width: "100%",
+          height: "100%",
           gridTemplateAreas: gridTemplateLargeScreens,
         }}
       >
@@ -27,15 +27,15 @@ function About() {
             <Avatar
               variant="rounded"
               imgProps={{
-                width: "70",
-                height: "70",
+                width: "150",
+                height: "150",
                 loading: "lazy",
               }}
               alt="Oliver Fritsche"
               src="/public/icon1.jpeg"
               sx={(theme) => ({
-                width: 70,
-                height: 70,
+                width: 150,
+                height: 150,
                 borderRadius: 1,
                 border: "1px solid",
                 borderColor: "grey.100",
@@ -56,7 +56,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(50%), translateY(25%)",
                 overflow: "hidden",
               })}
             >
@@ -93,30 +93,30 @@ function About() {
             variant="body2"
             sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
           >
-            Oliver Fritsche
+              Oliver Fritsche
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Machine Learning
+              Machine Learning
           </Typography>
-          <Divider sx={{ my: 1.5 }} />
+          {/* <Divider sx={{ my: 1.5 }} />
           <Typography variant="body2" sx={{ color: "text.tertiary" }}>
             Fulcrum
-          </Typography>
+          </Typography> */}
         </DashboardBox>
         <DashboardBox gridArea="b">
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
               imgProps={{
-                width: "70",
-                height: "70",
+                width: "150",
+                height: "150",
                 loading: "lazy",
               }}
               alt="Steven Carmacho"
               src="/public/icon2.jpeg"
               sx={(theme) => ({
-                width: 70,
-                height: 70,
+                width: 150,
+                height: 150,
                 borderRadius: 1,
                 border: "1px solid",
                 borderColor: "grey.100",
@@ -174,30 +174,30 @@ function About() {
             variant="body2"
             sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
           >
-            Oliver Fritsche
+              Oliver Fritsche
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Machine Learning
+              Machine Learning
           </Typography>
-          <Divider sx={{ my: 1.5 }} />
+          {/* <Divider sx={{ my: 1.5 }} />
           <Typography variant="body2" sx={{ color: "text.tertiary" }}>
             Come in
-          </Typography>
+          </Typography> */}
         </DashboardBox>
         <DashboardBox gridArea="c">
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
               imgProps={{
-                width: "70",
-                height: "70",
+                width: "150",
+                height: "150",
                 loading: "lazy",
               }}
               alt="Carlos Arciniegas"
               src="/public/icon3.jpeg"
               sx={(theme) => ({
-                width: 70,
-                height: 70,
+                width: 150,
+                height: 150,
                 borderRadius: 1,
                 border: "1px solid",
                 borderColor: "grey.100",
@@ -260,25 +260,25 @@ function About() {
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             Frontend, Backend
           </Typography>
-          <Divider sx={{ my: 1.5 }} />
+          {/* <Divider sx={{ my: 1.5 }} />
           <Typography variant="body2" sx={{ color: "text.tertiary" }}>
             Gang shit
-          </Typography>
+          </Typography> */}
         </DashboardBox>
         <DashboardBox gridArea="d">
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
               imgProps={{
-                width: "70",
-                height: "70",
+                width: "150",
+                height: "150",
                 loading: "lazy",
               }}
               alt="Tyler Halfpenny"
               src="/public/icon4.jpeg"
               sx={(theme) => ({
-                width: 70,
-                height: 70,
+                width: 150,
+                height: 150,
                 borderRadius: 1,
                 border: "1px solid",
                 borderColor: "grey.100",
@@ -341,13 +341,314 @@ function About() {
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             Frontend
           </Typography>
-          <Divider sx={{ my: 1.5 }} />
+          {/* <Divider sx={{ my: 1.5 }} />
           <Typography variant="body2" sx={{ color: "text.tertiary" }}>
             Penjamin
+          </Typography> */}
+        </DashboardBox>
+        <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: 1.5,
+          width: "100%",
+          height: "100%",
+          gridTemplateAreas: gridTemplateLargeScreens,
+        }}
+      >
+        <DashboardBox gridArea="d">
+          <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Avatar
+              variant="rounded"
+              imgProps={{
+                width: "150",
+                height: "150",
+                loading: "lazy",
+              }}
+              alt="Dr. Rick Leinecker"
+              src="/public/icon5.jpeg"
+              sx={(theme) => ({
+                width: 150,
+                height: 150,
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: "grey.100",
+                backgroundColor: "primary.50",
+              })}
+            />
+            <Box
+              sx={(theme) => ({
+                width: 24,
+                height: 24,
+                display: "flex",
+                justifyContent: "center",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                backgroundColor: "#FFF",
+                borderRadius: 40,
+                border: "2px solid",
+                borderColor: "primary.50",
+                boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+                transform: "translateX(50%)",
+                overflow: "hidden",
+              })}
+            >
+              <img
+                loading="lazy"
+                height="20"
+                width="40"
+                src="https://flagcdn.com/us.svg"
+                alt=""
+              />
+            </Box>
+          </Box>
+          <Box sx={{ mt: -0.5, mr: -0.5, ml: "auto" }}>
+            <IconButton
+              aria-label="Dr. Rick Leinecker LinkedIn profile"
+              component="a"
+              href="https://www.linkedin.com/in/rickleinecker/"
+              target="_blank"
+              rel="noopener"
+            >
+              <LinkedInIcon fontSize="small" sx={{ color: "grey.500" }} />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+          >
+            Dr. Leinecker
           </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Instructor
+          </Typography>
+          {/* <Divider sx={{ my: 1.5 }} />
+          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
+            Penjamin
+          </Typography> */}
+        </DashboardBox>
+        <DashboardBox gridArea="d">
+          <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Avatar
+              variant="rounded"
+              imgProps={{
+                width: "150",
+                height: "150",
+                loading: "lazy",
+              }}
+              alt="Dr. Hwan Choi"
+              src="/public/icon6.jpeg"
+              sx={(theme) => ({
+                width: 150,
+                height: 150,
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: "grey.100",
+                backgroundColor: "primary.50",
+              })}
+            />
+            <Box
+              sx={(theme) => ({
+                width: 24,
+                height: 24,
+                display: "flex",
+                justifyContent: "center",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                backgroundColor: "#FFF",
+                borderRadius: 40,
+                border: "2px solid",
+                borderColor: "primary.50",
+                boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+                transform: "translateX(50%)",
+                overflow: "hidden",
+              })}
+            >
+              <img
+                loading="lazy"
+                height="20"
+                width="40"
+                src="https://flagcdn.com/kr.svg"
+                alt=""
+              />
+            </Box>
+          </Box>
+          <Box sx={{ mt: -0.5, mr: -0.5, ml: "auto" }}>
+            <IconButton
+              aria-label="Dr. Hwan Choi LinkedIn profile"
+              component="a"
+              href="https://www.linkedin.com/in/hwan-choi-8ba75063/"
+              target="_blank"
+              rel="noopener"
+            >
+              <LinkedInIcon fontSize="small" sx={{ color: "grey.500" }} />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+          >
+            Dr. Choi
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Principal Investigator
+          </Typography>
+          {/* <Divider sx={{ my: 1.5 }} />
+          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
+            Penjamin
+          </Typography> */}
+        </DashboardBox>
+        <DashboardBox gridArea="d">
+          <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Avatar
+              variant="rounded"
+              imgProps={{
+                width: "150",
+                height: "150",
+                loading: "lazy",
+              }}
+              alt="Dr. Hossain"
+              src="/public/icon7.jpeg"
+              sx={(theme) => ({
+                width: 150,
+                height: 150,
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: "grey.100",
+                backgroundColor: "primary.50",
+              })}
+            />
+            <Box
+              sx={(theme) => ({
+                width: 24,
+                height: 24,
+                display: "flex",
+                justifyContent: "center",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                backgroundColor: "#FFF",
+                borderRadius: 40,
+                border: "2px solid",
+                borderColor: "primary.50",
+                boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+                transform: "translateX(50%)",
+                overflow: "hidden",
+              })}
+            >
+              <img
+                loading="lazy"
+                height="20"
+                width="40"
+                src="https://flagcdn.com/bd.svg"
+                alt=""
+              />
+            </Box>
+          </Box>
+          <Box sx={{ mt: -0.5, mr: -0.5, ml: "auto" }}>
+            <IconButton
+              aria-label="Dr. Hossain LinkedIn profile"
+              component="a"
+              href="https://www.linkedin.com/in/hwan-choi-8ba75063/"
+              target="_blank"
+              rel="noopener"
+            >
+              <LinkedInIcon fontSize="small" sx={{ color: "grey.500" }} />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+          >
+            Dr. Hossain
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Machine Learning, Mentor
+          </Typography>
+          {/* <Divider sx={{ my: 1.5 }} />
+          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
+            Penjamin
+          </Typography> */}
+        </DashboardBox>
+        <DashboardBox gridArea="d">
+          <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Avatar
+              variant="rounded"
+              imgProps={{
+                width: "150",
+                height: "150",
+                loading: "lazy",
+              }}
+              alt="Dr. Hossain"
+              src="/public/icon8.jpg"
+              sx={(theme) => ({
+                width: 150,
+                height: 150,
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: "grey.100",
+                backgroundColor: "primary.50",
+              })}
+            />
+            <Box
+              sx={(theme) => ({
+                width: 24,
+                height: 24,
+                display: "flex",
+                justifyContent: "center",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                backgroundColor: "#FFF",
+                borderRadius: 40,
+                border: "2px solid",
+                borderColor: "primary.50",
+                boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+                transform: "translateX(50%)",
+                overflow: "hidden",
+              })}
+            >
+              <img
+                loading="lazy"
+                height="20"
+                width="40"
+                src="https://flagcdn.com/us.svg"
+                alt=""
+              />
+            </Box>
+          </Box>
+          <Box sx={{ mt: -0.5, mr: -0.5, ml: "auto" }}>
+            <IconButton
+              aria-label="Dr. Hossain LinkedIn profile"
+              component="a"
+              href="https://www.linkedin.com/"
+              target="_blank"
+              rel="noopener"
+            >
+              <LinkedInIcon fontSize="small" sx={{ color: "grey.500" }} />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+          >
+            Joseph Dranetz
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Mentor
+          </Typography>
+          {/* <Divider sx={{ my: 1.5 }} />
+          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
+            Penjamin
+          </Typography> */}
         </DashboardBox>
       </Box>
-    </Box>
+      
+      </Box>
   );
 }
 
