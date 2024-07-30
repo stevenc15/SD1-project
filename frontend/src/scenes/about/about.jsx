@@ -133,7 +133,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -210,7 +210,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -287,7 +287,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -376,7 +376,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -444,7 +444,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -512,7 +512,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -580,7 +580,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
