@@ -30,7 +30,6 @@ current_imu_index = 0
 
 df = pd.read_csv('joint_angle_pred.csv')
 
-
 def load_joint_data():
 
     global data_joint, sample_rate_joint 
@@ -226,7 +225,19 @@ def imu_data():
 
 @app.route('/joint_angle_pred', methods=['GET'])
 def joint_angle_pred():
-    df = pd.read_csv('joint_angle_pred.csv')
+    df = pd.read_csv('teacher_trimmed.csv')
+    n = df.size
+
+    if 'time' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
+        return jsonify({'error': 'Required columns'}), 400
+    
+    data = df[['time', 'elbow_flex_r_pred']].head(n)
+    data = df.values.tolist()
+    return jsonify(data)
+
+@app.route('/joint_angle_pred_one', methods=['GET'])
+def joint_angle_pred_one():
+    df = pd.read_csv('student_trimmed.csv')
     n = df.size
 
     if 'time' not in df.columns or 'elbow_flex_r_pred' not in df.columns:
@@ -240,7 +251,8 @@ def joint_angle_pred():
 pred_data_idx = 0
 @app.route('/pred_data', methods=['GET'])
 def pred_data():
-    df = pd.read_csv('joint_angle_pred.csv')
+    # df = pd.read_csv('joint_angle_pred.csv')
+    df = pd.read_csv('teacher_trimmed.csv')
     global pred_data_idx
     n = len(df)
     if pred_data_idx >= n:
@@ -263,7 +275,8 @@ def pred_data():
 pred_data_idx_one = 0
 @app.route('/pred_data_one', methods=['GET'])
 def pred_data_one():
-    df = pd.read_csv('joint_angle_pred_one.csv')
+    # df = pd.read_csv('joint_angle_pred_one.csv')
+    df = pd.read_csv('student_trimmed.csv')
     global pred_data_idx_one
     n = len(df)
     if pred_data_idx_one >= n:

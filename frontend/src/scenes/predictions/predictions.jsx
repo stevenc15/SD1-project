@@ -8,18 +8,18 @@ import {
   Box,
   Button,
   Alert,
-  AlertTitle,
   IconButton,
   Collapse,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import demo from "/public/IMG_2850.mov";
-import FlexBetween from "@/components/FlexBetween";
-import LiveRow from "../dashboard/LiveRow";
+import LiveSwap from "../dashboard/LiveSwap";
 
 
 // import Alert from "@mui/material/Alert";
 // import AlertTitle from "@mui/material/AlertTitle";
+// import demo from "/public/IMG_2850.mov";
+// import FlexBetween from "@/components/FlexBetween";
+import LiveRow from "../dashboard/LiveRow";
 
 function Predictions() {
   const palette = useTheme();
@@ -35,12 +35,20 @@ const gridTemplateButtons = `
   const [angleData, setAngleData] = useState([]);
   const [timeData, setTimeData] = useState([]);
   const [elapsedTime, setElapsedTime] = useState()
-  const [open, setOpen] = useState(true);
+
+  const [open, setOpen] = useState(true)
+  // const open = use(true);
+  // const setOpen = () => {
+  //   open.current = true
+  // }
+  // const setClose = () => {
+  //   open.current = false
+  // };
 
   const isPlaying = useRef(true);
   const setPlay = () => {
     isPlaying.current = !isPlaying.current;
-    console.log(isPlaying.current);
+    console.log("setPlay: " + isPlaying.current)
   };
 
   const currentFrame = useRef(0);
@@ -68,7 +76,17 @@ const gridTemplateButtons = `
   ];
 
   const [selectedModel, setSelectedModel] = useState(1);
-  console.log(selectedModel);
+  const setModelVersion = () => {
+    if(selectedModel == 1)
+    {
+      setSelectedModel(6)
+    }
+    else if(selectedModel == 6)
+    {
+      setSelectedModel(1)
+    }
+    console.log("Selected model changed to: " + selectedModel)
+  }
 
   const rotDir = useRef(0);
   const setRotLeft = () => {
@@ -130,8 +148,10 @@ const gridTemplateButtons = `
   };
 
   useEffect(() => {
+    console.log("MODEL CHANGED: " + selectedModel)
     setOpen(true)
     setTimeout(() => {
+      // setClose();
       setOpen(false);
     }, 3000);
   }, [selectedModel]);
@@ -145,21 +165,19 @@ const gridTemplateButtons = `
               aria-label="close"
               color="inherit"
               size="small"
-              onClick={() => {
-                setOpen(false);
-              }}
+              onClick={ ()=>{setOpen(false)} }
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
           sx={{ mb: 2 }}
         >
-          {elapsedTime} seconds of input data loaded to model.
+          Model {selectedModel} loaded.
         </Alert>
       </Collapse>
         <Select 
               defaultValue={options[0]}
-              onChange={setSelectedModel}
+              onChange={setModelVersion}
               options={options}
             />
         <Box
@@ -192,7 +210,8 @@ const gridTemplateButtons = `
             </video>
           </DashboardBox> */}
           <DashboardBox height={600} width={670} my={4} gridArea={'b'}>
-            <LiveRow></LiveRow>
+            {/* <LiveRow></LiveRow> */}
+            <LiveSwap modelVersion={selectedModel}></LiveSwap>
           </DashboardBox>
         </Box>
         <Box display="grid"

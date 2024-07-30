@@ -22,7 +22,7 @@ function About() {
           gridTemplateAreas: gridTemplateLargeScreens,
         }}
       >
-        <DashboardBox gridArea="a">
+        <DashboardBox gridArea="a" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -56,7 +56,7 @@ function About() {
                 border: "2px solid",
                 borderColor: "primary.50",
                 boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                transform: "translateX(50%), translateY(25%)",
+                transform: "translateX(-100%), translateY(100%)",
                 overflow: "hidden",
               })}
             >
@@ -69,7 +69,7 @@ function About() {
               />
             </Box>
           </Box>
-          <Box sx={{ mt: -0.5, mr: -0.5, ml: "auto" }}>
+          <Box sx={{ mt: -0.5, ml: "auto", backgroundColor:"sky.200"}}>
             <IconButton
               aria-label="Oliver Fritsche LinkedIn profile"
               component="a"
@@ -91,19 +91,15 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml: 1 , mt: 2, mb: 0.5}}
           >
               Oliver Fritsche
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Machine Learning
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
+            Machine Learning
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Fulcrum
-          </Typography> */}
         </DashboardBox>
-        <DashboardBox gridArea="b">
+        <DashboardBox gridArea="b" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -172,19 +168,15 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
-              Oliver Fritsche
+              Steven Carmacho
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
               Machine Learning
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Come in
-          </Typography> */}
         </DashboardBox>
-        <DashboardBox gridArea="c">
+        <DashboardBox gridArea="c" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -253,19 +245,15 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
             Carlos Arciniegas
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
             Frontend, Backend
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Gang shit
-          </Typography> */}
         </DashboardBox>
-        <DashboardBox gridArea="d">
+        <DashboardBox gridArea="d" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -334,17 +322,13 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
             Tyler Halfpenny
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
             Frontend
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Penjamin
-          </Typography> */}
         </DashboardBox>
         <Box
         sx={{
@@ -358,7 +342,7 @@ function About() {
           gridTemplateAreas: gridTemplateLargeScreens,
         }}
       >
-        <DashboardBox gridArea="d">
+        <DashboardBox gridArea="d" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -418,19 +402,15 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
             Dr. Leinecker
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
             Instructor
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Penjamin
-          </Typography> */}
         </DashboardBox>
-        <DashboardBox gridArea="d">
+        <DashboardBox gridArea="d" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -490,19 +470,15 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
             Dr. Choi
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
             Principal Investigator
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Penjamin
-          </Typography> */}
         </DashboardBox>
-        <DashboardBox gridArea="d">
+        <DashboardBox gridArea="d" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -562,19 +538,15 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
             Dr. Hossain
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Machine Learning, Mentor
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
+            Mentor
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Penjamin
-          </Typography> */}
         </DashboardBox>
-        <DashboardBox gridArea="d">
+        <DashboardBox gridArea="d" sx={{backgroundColor: "sky.200"}}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
               variant="rounded"
@@ -623,7 +595,7 @@ function About() {
           </Box>
           <Box sx={{ mt: -0.5, mr: -0.5, ml: "auto" }}>
             <IconButton
-              aria-label="Dr. Hossain LinkedIn profile"
+              aria-label="LinkedIn profile"
               component="a"
               href="https://www.linkedin.com/"
               target="_blank"
@@ -634,17 +606,13 @@ function About() {
           </Box>
           <Typography
             variant="body2"
-            sx={{ fontWeight: "bold", mt: 2, mb: 0.5 }}
+            sx={{ fontWeight: "bold", ml:1, mt: 2, mb: 0.5 }}
           >
             Joseph Dranetz
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ ml:1, color: "text.secondary" }}>
             Mentor
           </Typography>
-          {/* <Divider sx={{ my: 1.5 }} />
-          <Typography variant="body2" sx={{ color: "text.tertiary" }}>
-            Penjamin
-          </Typography> */}
         </DashboardBox>
       </Box>
       

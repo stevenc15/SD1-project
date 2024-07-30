@@ -22,9 +22,9 @@ export default function Model(props) {
   });
 
   useEffect(() => {
-    if (props.selectedModel === 1) {
+    if (props.selectedModel == 1) {
       console.log("1 Sensor Output.");
-      fetch("http://localhost:5000/joint_angle_pred", {
+      fetch("http://localhost:5000/joint_angle_pred_one", {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -33,7 +33,7 @@ export default function Model(props) {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-
+          console.log("From Model.jsx 1.")
           const arrayColumn = (arr, n) => arr.map((x) => x[n]);
           let tmpLen = data.length;
 
@@ -44,7 +44,7 @@ export default function Model(props) {
             timeElapsed: data[tmpLen - 1][0] - data[0][0],
           });
         });
-    } else if (props.selectedModel === 6) {
+    } else if (props.selectedModel == 6) {
       console.log("6 Sensor Output.");
       fetch("http://localhost:5000/joint_angle_pred", {
         headers: {
@@ -55,7 +55,7 @@ export default function Model(props) {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-
+          console.log("From Model.jsx 6.")
           const arrayColumn = (arr, n) => arr.map((x) => x[n]);
           let tmpLen = data.length;
 
@@ -67,7 +67,7 @@ export default function Model(props) {
           });
         });
     }
-  }, []);
+  }, [props.selectedModel]);
 
   console.log(apiData.timeElapsed + " of data loaded to Model.");
 
@@ -125,7 +125,6 @@ export default function Model(props) {
         apiData.angleData[props.currentFrame.current] * (Math.PI / 180);
       statObject.zRot =
         statObject.zRot + (props.rotDir.current * statObject.rotSpeed);
-        console.log(statObject.rotSpeed)
       group.current.rotation.z = statObject.zRot * (Math.PI / 180);
     }
     delta = delta % interval;
