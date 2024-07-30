@@ -236,6 +236,7 @@ def joint_angle_pred():
     data = df.values.tolist()
     return jsonify(data)
 
+
 pred_data_idx = 0
 @app.route('/pred_data', methods=['GET'])
 def pred_data():
@@ -257,6 +258,31 @@ def pred_data():
     }
     pred_data_idx += 1
     return jsonify(result), 200
+
+# NEW ENDPOINT FOR DATA FROM JUST ONE SENSOR
+pred_data_idx_one = 0
+@app.route('/pred_data_one', methods=['GET'])
+def pred_data_one():
+    df = pd.read_csv('joint_angle_pred_one.csv')
+    global pred_data_idx_one
+    n = len(df)
+    if pred_data_idx_one >= n:
+        pred_data_idx_one = 0
+        return jsonify({'Backend error': 'No more data available'}), 400
+
+    # if 'time_pred' not in df.columns or 'elbow_flex_r_pred' not in df.columns or 'elbow_flex_r' in df.columns:
+    #     return jsonify({'Backend error': 'Column name not found in csv file'}), 400
+    
+    row = df.iloc[pred_data_idx_one]
+    result = {
+        'time': row['time'],
+        'elbow_flex_r': row['elbow_flex_r'],
+        'elbow_flex_r_pred': row['elbow_flex_r_pred']
+    }
+    pred_data_idx_one += 1
+    return jsonify(result), 200
+# NEW ENDPOINT FOR DATA FROM JUST ONE SENSOR
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
