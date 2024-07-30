@@ -53,20 +53,27 @@ const gridTemplateButtons = `
 
   const currentFrame = useRef(0);
   const recStatus = useRef(0);
+  const recStatusName = useRef("Record Data")
   const frame1 = useRef(0);
   const frame2 = useRef(0);
 
   const setRecStatus = () => {
     console.log(recStatus.current);
     if (recStatus.current == 0) {
+      recStatusName.current = "Stop Recording";
       frame1.current = currentFrame.current;
       recStatus.current = recStatus.current + 1;
     }
-    if (recStatus.current == 1) {
+    else if (recStatus.current == 1) {
+      recStatusName.current = "Download Recording";
       frame2.current = currentFrame.current;
-      recStatus.current = 0;
+      recStatus.current = 2;
       console.log(frame1.current + " " + frame2.current);
+    }
+    else if (recStatus.current == 2) {
+      recStatusName.current = "Record Data";
       jsonFileDownloadRec();
+      recStatus.current = 0
     }
   };
 
@@ -134,7 +141,7 @@ const gridTemplateButtons = `
     {
       jsonFileDownload();
     }
-    let tmpArray = angleData.slice(frame1, frame2)
+    let tmpArray = angleData.slice(frame1.current, frame2.current)
     let json_data = JSON.stringify(tmpArray);
     const fileName = "joint_data.json";
     const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
@@ -230,10 +237,10 @@ const gridTemplateButtons = `
             Rotate Right
           </Button>
           <Button variant="contained" type="button" onClick={resetState}>
-            Reset Camera
+            Reset Input
           </Button>
           <Button variant="contained" type="button" onClick={setRecStatus}>
-            Start/Stop/Download Rec
+            {recStatusName.current}
           </Button>
           <Button
             variant="contained"
