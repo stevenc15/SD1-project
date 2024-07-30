@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Select from "react-select";
 import Model from "/public/Model";
 import DashboardBox from "@/components/DashboardBox";
@@ -15,24 +15,26 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import demo from "/public/IMG_2850.mov";
 import FlexBetween from "@/components/FlexBetween";
+import LiveRow from "../dashboard/LiveRow";
+
 
 // import Alert from "@mui/material/Alert";
 // import AlertTitle from "@mui/material/AlertTitle";
 
 function Predictions() {
   const palette = useTheme();
-  console.log(palette);
 
   const gridTemplateLargeScreens = `
-    "e e e"
-    "a b c"
-    "d d d"
+    "a b . "
 `;
 
-  const tempData = 0;
+const gridTemplateButtons = `
+    "d"
+`;
+
   const [angleData, setAngleData] = useState([]);
   const [timeData, setTimeData] = useState([]);
-
+  const [elapsedTime, setElapsedTime] = useState()
   const [open, setOpen] = useState(true);
 
   const isPlaying = useRef(true);
@@ -56,7 +58,7 @@ function Predictions() {
       frame2.current = currentFrame.current;
       recStatus.current = 0;
       console.log(frame1.current + " " + frame2.current);
-      jsonFileDownload();
+      jsonFileDownloadRec();
     }
   };
 
@@ -84,12 +86,12 @@ function Predictions() {
     }
   };
 
+  const resetState = () => {
+    currentFrame.current = 0
+    console.log("Reset.")
+  }
+
   const jsonFileDownload = () => {
-    console.log(angleData);
-    console.log(timeData);
-
-    //const tmpArray = (arr, n) => arr.map(x => x[n]);
-
     let tmpArray = angleData;
     let json_data = JSON.stringify(tmpArray);
     const fileName = "joint_data.json";
@@ -102,6 +104,37 @@ function Predictions() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const jsonFileDownloadRec = () => {
+    if(frame1 > frame2)
+    {
+      let tmpFrame = frame1.current
+      frame1.current = frame2.current
+      frame2.current = tmpFrame
+    }
+    else if (frame1 == frame2)
+    {
+      jsonFileDownload();
+    }
+    let tmpArray = angleData.slice(frame1, frame2)
+    let json_data = JSON.stringify(tmpArray);
+    const fileName = "joint_data.json";
+    const data = new Blob([JSON.stringify(json_data)], { type: "text/json" });
+    const jsonURL = window.URL.createObjectURL(data);
+    const link = document.createElement("a");
+    document.body.appendChild(link);
+    link.href = jsonURL;
+    link.setAttribute("download", fileName);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    setOpen(true)
+    setTimeout(() => {
+      setOpen(false);
+    }, 3000);
+  }, [selectedModel]);
 
   return (
     <>
@@ -121,35 +154,31 @@ function Predictions() {
           }
           sx={{ mb: 2 }}
         >
-          {tempData} seconds of input data loaded to model.
+          {elapsedTime} seconds of input data loaded to model.
         </Alert>
       </Collapse>
-      <div>
-        <Box
-          width="100%"
-          height="100%"
-          display="grid"
-          gap="1.5rem"
-          sx={{
-            // modify the minmax for the size of the graphs
-            // fr -> fractional units (split each box evenly)
-            gridTemplateColumns: "repeat(3, minmax(370px, 1fr))",
-            gridTemplateRows: "repeat(1, minmax(90px, 1fr))",
-            gridTemplateAreas: gridTemplateLargeScreens,
-          }}
-        >
-          <Box gridArea="e">
-            <Select 
+        <Select 
               defaultValue={options[0]}
               onChange={setSelectedModel}
               options={options}
             />
-          </Box>
-          <DashboardBox gridArea="a">
-            <Canvas id="modelCanvas">
+        <Box
+          width="100%"
+          height="100%"
+          display="grid"
+          gap="6.0rem"
+          sx={{
+            gridTemplateColumns: "repeat(2, minmax(10px, 2fr))",
+            gridTemplateRows: "repeat(1, minmax(100px, 2fr))",
+            gridTemplateAreas: gridTemplateLargeScreens,
+          }}
+        >
+          <DashboardBox height={600} width={670}my={4} sx={{backgroundColor: palette.palette.grey[900]}}>
+          <Canvas id="modelCanvas">
               <Model
                 passAngleData={setAngleData}
                 passTimeData={setTimeData}
+                passElapsed={setElapsedTime}
                 selectedModel={selectedModel}
                 isPlaying={isPlaying}
                 currentFrame={currentFrame}
@@ -157,48 +186,44 @@ function Predictions() {
               />
             </Canvas>
           </DashboardBox>
-          <DashboardBox gridArea="b">
-            <video width="300" height="400" loop={true} autoPlay controls>
+          {/* <DashboardBox height={400} width={470} my={4}> 
+            <video width="500" height="400" loop={true} autoPlay controls>
               <source src={demo} type="video/mp4" />
             </video>
-          </DashboardBox>
-          <DashboardBox gridArea="c">
-            <video width="300" height="400" loop={true} autoPlay controls>
-              <source src={demo} type="video/mp4" />
-            </video>
-          </DashboardBox>
-          <DashboardBox
-            gridArea="d"
-            sx={{
-              display: "flex",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <Button variant="contained" type="button" onClick={setRotLeft}>
-              Rotate Left
-            </Button>
-            <Button variant="contained" type="button" onClick={setPlay}>
-              Pause/Play
-            </Button>
-            <Button variant="contained" type="button" onClick={setRotRight}>
-              Rotate Right
-            </Button>
-            <Button variant="contained" type="button">
-              Reset Camera
-            </Button>
-            <Button variant="contained" type="button" onClick={setRecStatus}>
-              Start/Stop/Download Rec
-            </Button>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={jsonFileDownload}
-            >
-              Download Full Recording
-            </Button>
+          </DashboardBox> */}
+          <DashboardBox height={600} width={670} my={4} gridArea={'b'}>
+            <LiveRow></LiveRow>
           </DashboardBox>
         </Box>
-      </div>
+        <Box display="grid"
+          gap="2rem" sx={{
+            gridTemplateColumns: "repeat(6, minmax(5px, 1fr))",
+            gridTemplateRows: "repeat(1, minmax(1px, 1fr))",
+            gridTemplateAreas: gridTemplateButtons,
+          }}>
+          <Button variant="contained" type="button" onClick={setRotLeft}>
+            Rotate Left
+          </Button>
+          <Button variant="contained" type="button" onClick={setPlay}>
+            Pause/Play
+          </Button>
+          <Button variant="contained" type="button" onClick={setRotRight}>
+            Rotate Right
+          </Button>
+          <Button variant="contained" type="button" onClick={resetState}>
+            Reset Camera
+          </Button>
+          <Button variant="contained" type="button" onClick={setRecStatus}>
+            Start/Stop/Download Rec
+          </Button>
+          <Button
+            variant="contained"
+            type="button"
+            onClick={jsonFileDownload}
+          >
+            Download Full Recording
+          </Button>
+        </Box>
     </>
   );
 }

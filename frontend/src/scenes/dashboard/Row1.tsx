@@ -290,9 +290,9 @@ const Row1 = ({emg_data, imu_data}: Props) => {
   }, [emg_data, palette, imu_data])
   return (
     <>
-        <DashboardBox gridArea="a" ref={emgChartRef}></DashboardBox>
-        <DashboardBox gridArea="b" ref={imuAccChartRef}></DashboardBox>
-        <DashboardBox gridArea="c" ref={imuGyroChartRef}> </DashboardBox>
+      <DashboardBox gridArea="a" ref={emgChartRef}></DashboardBox>
+      <DashboardBox gridArea="b" ref={imuAccChartRef}></DashboardBox>
+      <DashboardBox gridArea="c" ref={imuGyroChartRef}> </DashboardBox>
     </>
   )
 }

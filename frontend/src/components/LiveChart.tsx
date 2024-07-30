@@ -86,7 +86,6 @@ const LiveChart: React.FC = () => {
   });
 
   return <DashboardBox ref={containerRef} id="container"></DashboardBox>
-  ;
 };
 
 export default LiveChart;
